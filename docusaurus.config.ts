@@ -18,7 +18,7 @@ const config: Config = {
   url: 'https://energyconsumptionoptimizer.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: 'documentation',
+  baseUrl: 'eco-documentation',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -41,6 +41,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
         },
@@ -80,7 +81,7 @@ const config: Config = {
           items: [
             {
               label: 'SPE Report',
-              to: '/docs/intro',
+              to: '/report/intro',
             },
           ],
         }
