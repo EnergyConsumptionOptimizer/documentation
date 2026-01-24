@@ -1,5 +1,5 @@
 {
-  "name": "my-ecodocumentation",
+  "name": "documentation",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",

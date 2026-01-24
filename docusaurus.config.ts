@@ -18,12 +18,12 @@ const config: Config = {
   url: 'https://energyconsumptionoptimizer.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: 'eco-documentation',
+  baseUrl: 'documentation',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'ECO', // Usually your GitHub org/user name.
-  projectName: 'eco-documentation', // Usually your repo name.
+  projectName: 'documentation', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 
