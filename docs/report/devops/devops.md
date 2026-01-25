@@ -15,7 +15,7 @@ The project is licensed under the [Apache License, Version 2.0](https://www.apac
 We utilize **Git** as our Distributed Version Control System. The development workflow adheres to the [**GitHub Flow**](https://docs.github.com/en/get-started/using-github/github-flow). This is a lightweight, branch-based workflow that supports teams in deploying regularly.
 
 * **Main Branch:** The `main` branch always contains deployable, production-ready code.
-* **Feature Branches:** New work is done on short-lived feature branches created from `main`. Once work is complete, it is merged back into `main` via a Pull Request.
+* **Feature Branches:** New work is done on short-lived feature branches created from `main`. Once work is complete, it is merged back into `main` via a Pull Request, and the branch is automatically deleted.
 
 ### Branch Organization
 
@@ -49,6 +49,7 @@ To maintain a strictly linear project history, we use the **Rebase and Merge** s
 
 To ensure the integrity and security of the codebase, we enforce strict rules on the `main` branch and throughout the repository:
 
+* **Pull Request Required:** Direct pushes to `main` are prohibited. All changes must be submitted via a Pull Request to ensure automated validation.
 * **Signed Commits:** We enforce **verified signatures** globally. Commits pushed to any branch (excluding `gh-pages`) must be cryptographically signed, preventing author impersonation.
 * **Linear History:** To align with our rebase strategy, we enforce a linear history on `main`. Merge commits are blocked to ensure a clean and traceable timeline.
 * **Status Checks:** Pull Requests cannot be merged unless the required validation workflow completes successfully.
@@ -81,6 +82,23 @@ by the CI/CD pipeline.
 In particular, we rely on automated plugins to manage the release process. These tools analyze the (conventional) commit
 messages and determine the next version of the software based on the changes introduced in the codebase (e.g., a fix
 triggers a PATCH, a feat triggers a MINOR). The process also generates a changelog and creates a new release on GitHub.
+
+## Project Scaffolding
+To standardize the creation of new services and reduce setup time, we leverage GitHub Template Repositories.
+This ensures that every new microservice adheres to our architectural standards and comes pre-equipped with the 
+necessary build scripts and CI/CD workflows.
+
+We maintain specific templates for our primary languages:
+
+* **Template for Kotlin Projects:** It includes a pre-configured Gradle build, **Ktlint** for formatting, **Detekt** for static analysis, and **Dokka** for documentation generation.
+* **Template for TypeScript Projects:** It is configured with **ESLint** and **Prettier** for code quality. Crucially, it wraps Node.js management within Gradle.
+
+Both templates come pre-configured with the following architectural standards:
+
+* **CI/CD Workflows:** Ready-to-use GitHub Actions for PR validation, Docker multi-arch builds, and documentation deployment.
+* **Release Automation:** Fully configured **Semantic Release** to handle versioning, changelogs, and GitHub Releases.
+* **Quality Gates:** Pre-commit hooks enforcing **Conventional Commits** and strict linting rules.
+* **Dependency Management:** Automated dependency scanning and updates via **Renovate**.
 
 ## Build Automation
 The project uses **Gradle** as the primary build automation tool, acting as a wrapper even for Node-based services.
@@ -155,11 +173,3 @@ flowchart LR
     
 
 ```
-## Docker
-
-The application is containerized using **Docker**. We utilize **Multi-Stage Builds** to optimize image size:
-
-1. **Builder Stage:** Uses a heavy image (e.g., `node` or `gradle:jdk`) to compile code and install dependencies.
-2. **Runtime Stage:** Copies only the necessary artifacts (the `dist` folder or compiled JARs) into a lightweight Alpine-based image (e.g., `nginx:alpine` for frontend, `node:alpine` for services).
-
-A `docker-compose.yml` is maintained at the bootstrap repository to orchestrate the services.
