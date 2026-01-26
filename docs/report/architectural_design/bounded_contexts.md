@@ -186,13 +186,9 @@ After a forecast is computed it sends, for each utility, the forecast aggregatio
 
 ### Events
 
-**Inbound events:**
-
-* None (the context relies on synchronous HTTP calls for input data).
-
 **Outbound events:**
 
-* *ForecastEvaluation*: sent to the Threshold context via HTTP when forecast aggregations are produced.
+* *ForecastEvaluation*: sent to the Threshold context when forecast aggregations are produced.
 
 ## Threshold context
 This context is responsible for managing and evaluating the utility consumption limits that trigger alerts.
@@ -234,12 +230,11 @@ A daily background job acts as a "reset mechanism," returning eligible breached 
 
 **Inbound events:**
 
-* *utilityMetersUpdate*: received from Monitoring containing utility readings.
-* *ForecastEvaluation*: received from Forecasting via internal HTTP call containing forecast aggregations.
+* *ForecastEvaluation*: received from Forecasting containing forecast aggregations.
 
 **Outbound events:**
 
-* *ThresholdExceeded*: sent to Alert context via HTTP for each breached threshold.
+* *ThresholdExceeded*: sent to Alert context for each breached threshold.
 
 
 ## Alert context
@@ -256,15 +251,15 @@ threshold exists within a specific time window (1 hour), the new alert is suppre
 
 **Commands triggered by the admin:**
 
-| Command | Description |
-| --- | --- |
-| SubscribeAlertsStream | Subscribe to the server-sent events (SSE) stream for real-time alerts |
-| GetAlertById | Retrieve a single alert by identifier |
-| GetAlerts | Retrieve all stored alerts |
-| DeleteAlert | Delete a single alert |
-| DeleteAllAlerts | Delete all alerts |
-| GetUnreadAlertCount | Retrieve the number of unread alerts |
-| MarkAlertAsRead | Mark an alert as read (acknowledge) |
+| Command | Description                                         |
+| --- |-----------------------------------------------------|
+| SubscribeAlertsStream | Subscribe to the server stream for real-time alerts |
+| GetAlertById | Retrieve a single alert by identifier               |
+| GetAlerts | Retrieve all stored alerts                          |
+| DeleteAlert | Delete a single alert                               |
+| DeleteAllAlerts | Delete all alerts                                   |
+| GetUnreadAlertCount | Retrieve the number of unread alerts                |
+| MarkAlertAsRead | Mark an alert as read (acknowledge)                 |
 
 **Commands triggered by the system:**
 
@@ -277,11 +272,11 @@ threshold exists within a specific time window (1 hour), the new alert is suppre
 
 **Inbound events:**
 
-* *ThresholdExceeded*: received from the Threshold context via internal HTTP.
+* *ThresholdExceeded*: received from the Threshold context.
 
 **Outbound events:**
 
-* *NEW_ALERT*: broadcast to connected clients via SSE when a new alert is created and sent.
+* *NewAlert*: broadcast to connected clients when a new alert is created and sent.
 
 ## Context Map
 Along with the bounded contexts, the team produced the context map. Each bounded context is isolated and can be implemented independently,
