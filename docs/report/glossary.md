@@ -28,9 +28,10 @@ sidebar_position: 2
 | **Zone**                             | A section of the floor plan                                                                                                                            |
 | **Smart furniture hookup**           | A network-connected utility interfaces integrated into furniture that monitor the resource consumption and transmit usage to a remote service via HTTP |
 | **Status of smart furniture hookup** | The current operational state of a smart furniture hookup, indicating whether it is actively supplying a utility or not                                |
+| **Endpoint**                         | A specific URL that allows a client to interact with a particular resource on a server using the HTTP protocol                                         |
 | **Map**                              | The graphical representation of the floor plan of the house showing various zones and the location of smart furniture hookups                          |
-| *Forecast of consumption*            | Prediction of future utility consumptions based on historical consumption data                                                                         |
-| *Consumption threshold*              | A user-defined value of utility consumption limit, used for trigger alerts                                                                             |
+| **Forecast of consumption**          | Prediction of future utility consumptions based on historical consumption data                                                                         |
+| **Consumption threshold**            | A user-defined value of utility consumption limit, used for trigger alerts                                                                             |
 | **Alert**                            | A warning sent to the user when utility consumption approaches or exceeds a defined threshold                                                          |
-| *Utility consumption data filter*    | The selection of utility consumption data according to specific criteria                                                                               |
-| *Monitoring*                         | The process of acquiring data and displaying as visual component                                                                                       |
+| **Utility consumption data filter**  | The selection of utility consumption data according to specific criteria                                                                               |
+| **Monitoring**                       | The process of acquiring data and displaying as visual component                                                                                       |
