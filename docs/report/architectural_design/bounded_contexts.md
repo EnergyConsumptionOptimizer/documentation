@@ -163,49 +163,125 @@ Commands trigger by the physical hookup:
 
 ## Forecasting context
 This context is responsible for managing the forecast of utility consumptions.
-Forecasts are generated on a schedule—daily, weakly, or at another interval—which is determined by the depth and
-granularity of historical consumption data available.
+Forecasts are computed by a scheduled daily job, which runs by default at 00:01 and triggers the forecast computation logic.
+After a forecast is computed it sends, for each utility, the forecast aggregations (per `PeriodType`) to the Threshold context for evaluation.
+
+![forecast_ddd.svg](../img/uml/forecast_ddd.svg)
+
+### Commands
+
+**Commands triggered by the user:**
+
+| Command | Description |
+| --- | --- |
+| GetForecasts | Retrieve all stored forecasts |
+| GetForecastByUtilityType | Retrieve the stored forecast for a specific `UtilityType` |
+
+**Commands triggered by the system:**
+
+| Command | Description |
+| --- | --- |
+| ComputeForecasts | Daily scheduled computation of forecasts for all utilities |
+| NotifyForecastAggregations | Send forecast aggregations (per `PeriodType`) to the Threshold context for evaluation |
+
+### Events
+
+**Inbound events:**
+
+* None (the context relies on synchronous HTTP calls for input data).
+
+**Outbound events:**
+
+* *ForecastEvaluation*: sent to the Threshold context via HTTP when forecast aggregations are produced.
 
 ## Threshold context
 This context is responsible for managing and evaluating the utility consumption limits that trigger alerts.
+A `Threshold` is defined by a utility, a numeric limit, and a `ThresholdType` which dictates the evaluation logic:
 
-## Alert context
-This context is responsible for managing and delivery of the alerts to admins when consumption limits are exceeded.
-When that happens, it generates an alert that includes the date, a message and a descriptive message detailing the
-nature and specifics of the violation. The admin can view them, mark them as read to acknowledge them  and delete them when no longer relevant
-It subscribes to ThresholdExceeded events and handles the logic for delivering this information to the admin.
+* **ACTUAL:** Checked against realtime consumption streams.
+* **HISTORICAL:** Checked against aggregated historical consumption over a specific period.
+* **FORECAST:** Checked against aggregated forecast consumption over a specific period.
 
-### Ubiquitous language
+Evaluation is driven by multiple system inputs. The service receives updates from Monitoring to evaluate realtime and historical thresholds, and exposes an internal endpoint to evaluate forecasts.
+When a threshold is breached, it transitions to a `BREACHED` state (persisted for Historical/Forecast types) and triggers an alert.
+A daily background job acts as a "reset mechanism," returning eligible breached thresholds to an `ENABLED` state based on their period (e.g., weekly thresholds reset on Mondays).
 
-| **Term** | **Definition** |
-|----------|----------------|
-| #        | #              |
+![threshold_ddd.svg](../img/uml/threshold_ddd.svg)
 
 ### Commands
-**Commands triggered by the user:**
-
-| Command   | Description   |
-|:----------|:--------------|
-| #         | #             |
 
 **Commands triggered by the admin:**
 
 | Command | Description |
-|:--------|:------------|
-| #       | #           |
+| --- | --- |
+| GetThresholdById | Retrieve one threshold by identifier |
+| CreateThreshold | Create a new threshold |
+| UpdateThreshold | Modify an existing threshold |
+| DeleteThreshold | Delete an existing threshold |
+| ListThresholds | List thresholds, optionally filtered by utility, type, period, or name |
 
-**Commands triggered by an household user:**
+
+**Commands triggered by the system:**
 
 | Command | Description |
-|:--------|:------------|
-| #       | #           |
+| --- | --- |
+| EvaluateConsumptionReadings | Evaluate incoming Monitoring readings against ACTUAL/HISTORICAL thresholds |
+| EvaluateForecast | Evaluate Forecasting aggregations against FORECAST thresholds |
+| ResetThresholds | Daily CRON reset of eligible `BREACHED` thresholds back to `ENABLED` |
+| PublishThresholdsChange | Push enabled thresholds to Monitoring when the enabled set changes |
 
 ### Events
+
 **Inbound events:**
-**Outbound events:** emitted when
+
+* *utilityMetersUpdate*: received from Monitoring containing utility readings.
+* *ForecastEvaluation*: received from Forecasting via internal HTTP call containing forecast aggregations.
+
+**Outbound events:**
+
+* *ThresholdExceeded*: sent to Alert context via HTTP for each breached threshold.
 
 
+## Alert context
+This context is responsible for managing and delivery of the alerts to admins when consumption limits are exceeded.
+When that happens, it generates an alert that includes the date, a message, and a descriptive message detailing the
+nature and specifics of the violation. The admin can view them, mark them as read to acknowledge them and delete them when no longer relevant
+It subscribes to ThresholdExceeded events and handles the logic for delivering this information to the admin.
+The context implements **spam mitigation** logic specifically for `ACTUAL` thresholds: if an unread alert for the same
+threshold exists within a specific time window (1 hour), the new alert is suppressed to avoid notification fatigue.
 
+![alert_ddd.svg](../img/uml/alert_ddd.svg)
+
+### Commands
+
+**Commands triggered by the admin:**
+
+| Command | Description |
+| --- | --- |
+| SubscribeAlertsStream | Subscribe to the server-sent events (SSE) stream for real-time alerts |
+| GetAlertById | Retrieve a single alert by identifier |
+| GetAlerts | Retrieve all stored alerts |
+| DeleteAlert | Delete a single alert |
+| DeleteAllAlerts | Delete all alerts |
+| GetUnreadAlertCount | Retrieve the number of unread alerts |
+| MarkAlertAsRead | Mark an alert as read (acknowledge) |
+
+**Commands triggered by the system:**
+
+| Command | Description |
+| --- | --- |
+| CreateAlert | Create an alert from a threshold breach request (invoked by Threshold context) |
+| SendAlert | Attempt delivery (broadcast) of the created alert|
+
+### Events
+
+**Inbound events:**
+
+* *ThresholdExceeded*: received from the Threshold context via internal HTTP.
+
+**Outbound events:**
+
+* *NEW_ALERT*: broadcast to connected clients via SSE when a new alert is created and sent.
 
 ## Context Map
 Along with the bounded contexts, the team produced the context map. Each bounded context is isolated and can be implemented independently,
