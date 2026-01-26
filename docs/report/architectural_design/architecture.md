@@ -18,9 +18,9 @@ The decomposition strategy that we used is by bounded contexts. Here are the ser
 - **Smart Furniture Hookup service:** It will handle the Smart Furniture Hookup Context functionalities and exposes them through RESTful API endpoints.
     - Communication with other services:
       - It should forward requests to Monitoring Service to register a new smart furniture hookup.
-- **Map service:** This microservice will provide RESTful API endpoints to manage the map, the zones and position of smart
-furniture hookup within the map. Communication with other services:
-    - It should always check if the smart furniture hookup exists in the Smart Furniture Hookup Service before allowing it to be added to the map.
+- **Map service:**  It will handle the Map Context functionalities and exposes them through RESTful API endpoints.
+  - Communication with other services:
+      - It should always check if the smart furniture hookup exists in the Smart Furniture Hookup Service before allowing it to be added to the map.
 - **Monitoring service:** It will handle the Monitoring Context functionalities and exposes them through RESTful API endpoints and WebSockets.
   - Communication with other services:
     - It should always check if the smart furniture hookup exists in the Smart Furniture Hookup Service before registering its related utility consumption.
@@ -34,3 +34,15 @@ furniture hookup within the map. Communication with other services:
     - It should consume utility meter data from the Monitoring Service in real-time via WebSockets to evaluate active rules.
     - It should send requests to Alert Service to notify when a threshold is exceeded.
 - **Alert service:** It will handle the Alert Context functionalities and exposes them through RESTful API endpoints and SSE.
+
+## User interaction
+A frontend application will be developed to interact with the system. This application will serve as the user-facing platform,
+consuming the RESTful APIs exposed by the backend microservices and establishing connections via WebSockets for real-time communication.
+The REST APIs and WebSockets are exposed to external clients through a reverse proxy, which is responsible for routing incoming requests to the
+appropriate backend services.
+
+## Deployment View
+The system will be deployed using Docker containers. Each microservice is containerized and the orchestration of the containers 
+will be done using Docker Compose.
+
+![deployment_view.svg](../img/uml/deployment_view.svg)
