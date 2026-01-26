@@ -9,7 +9,7 @@ sidebar_position: 2
 
 | **Term**                             | **Definition**                                                                                                                                         |
 |--------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Platform**                         | The application that monitors and optimizes utility consumption                                                                                        |
+| **Platform**                         | The application that interacts with the user                                                                                                           |
 | **System**                           | The application that runs the platform                                                                                                                 |
 | **User**                             | An individual who uses the platform                                                                                                                    |
 | **Admin**                            | A user with full access rights who is responsible for configuring and managing the system                                                              |
