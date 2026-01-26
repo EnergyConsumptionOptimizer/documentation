@@ -125,7 +125,7 @@ Unit tests focus on non-trivial code across all the layers.
 
 ### API Testing
 API tests verify the interaction with the microservices from an external perspective.
-* **Node.js:** Tests use **Supertest** to send requests to the Express application, validating status codes and JSON payloads without needing a running server port.
+* **Typescript:** Tests use **Supertest** to send requests to the Express application, validating status codes and JSON payloads without needing a running server port.
 * **Kotlin:** Tests utilize the **Ktor Client** within a test engine context to verify route handling and response serialization.
 
 <details>
