@@ -5,4 +5,32 @@ sidebar_position: 2
 
 # Architecture
 
-...
+After identifying the bounded contexts and the main components of the system, a microservice architecture was chosen.
+Microservice architecture is a design pattern that structures an application as a collection of small, autonomous,
+and loosely coupled services, each implementing a specific business capability. adopting this architectural style supports
+continuous delivery and deployment of large and complex applications. 
+
+## Microservices Decomposition
+The decomposition strategy that we used is by bounded contexts. Here are the services that we identified:
+- **User service:** It will handle the User Context functionalities and exposes them through RESTful API endpoints.
+  - Communication with other services:
+    - It should act as the central authority to validate authentication tokens for all request authorizations in other services.
+- **Smart Furniture Hookup service:** It will handle the Smart Furniture Hookup Context functionalities and exposes them through RESTful API endpoints.
+    - Communication with other services:
+      - It should forward requests to Monitoring Service to register a new smart furniture hookup.
+- **Map service:** This microservice will provide RESTful API endpoints to manage the map, the zones and position of smart
+furniture hookup within the map. Communication with other services:
+    - It should always check if the smart furniture hookup exists in the Smart Furniture Hookup Service before allowing it to be added to the map.
+- **Monitoring service:** It will handle the Monitoring Context functionalities and exposes them through RESTful API endpoints and WebSockets.
+  - Communication with other services:
+    - It should always check if the smart furniture hookup exists in the Smart Furniture Hookup Service before registering its related utility consumption.
+    - It should always check in the Map Service if the smart furniture hookup is within a zone to enrich the measurement with spatial data.
+    - It should always check in the User Service if a household user exists when a username is provided in the measurement.
+- **Forecasting service:** It will handle the Forecasting Context functionalities and exposes them through RESTful API endpoints.
+    - Communication with other services:
+      - It should periodically fetch historical utility consumptions from the Monitoring Service via REST API endpoints to train/update its models.
+- **Threshold service:**  It will handle the Threshold Context functionalities and exposes them through RESTful API endpoints.
+  - Communication with other services:
+    - It should consume utility meter data from the Monitoring Service in real-time via WebSockets to evaluate active rules.
+    - It should send requests to Alert Service to notify when a threshold is exceeded.
+- **Alert service:** It will handle the Alert Context functionalities and exposes them through RESTful API endpoints and SSE.
