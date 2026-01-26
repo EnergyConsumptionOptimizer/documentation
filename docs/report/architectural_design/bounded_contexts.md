@@ -132,6 +132,13 @@ when a username is provided, that the corresponding household user account exist
 Additionally, it informs each physical smart furniture hookup of the endpoint to which it should send its data.
 Another key responsibility is querying the collected data in order to aggregate, filter, and retrieve real-time consumption information.
 
+![monitoring_ddd.svg](../img/uml/monitoring_ddd.svg)
+
+_About DDD_: In this context, we deliberately avoid defining aggregate roots or entities.
+This decision lies in the absence of any requirement to retrieve, update, or delete individual measurements.
+Instead, measurements are accessed exclusively through queries that operate on aggregated data.
+
+
 ### Commands
 Commands trigger by the physical hookup:
 
