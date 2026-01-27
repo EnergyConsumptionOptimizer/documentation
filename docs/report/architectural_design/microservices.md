@@ -4,11 +4,11 @@ sidebar_position: 3
 ---
 
 # Microservices
-
 After defining all use cases, the complete set of features for each context, and how services communicate with one another,
 this section presents the microservices design of the system.
 
-# User service
+## API Design
+### User service
 
 <details>
 <summary>RESTful API endpoints</summary>
@@ -42,7 +42,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/user)
 </details>
 
-# Smart Furniture Hookup service
+### Smart Furniture Hookup service
 <details>
 <summary>RESTful API endpoints</summary>
 
@@ -59,7 +59,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/hookup)
 </details>
 
-# Map service
+### Map service
 <details>
 <summary>RESTful API endpoints</summary>
 
@@ -94,7 +94,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/map)
 </details>
 
-# Monitoring service
+### Monitoring service
 
 <details>
 <summary>WebSocket namespaces</summary>
@@ -145,7 +145,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/monitoring)
 </details>
 
-# Forecasting service
+### Forecasting service
 
 <details>
 <summary>RESTful API endpoints</summary>
@@ -157,7 +157,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/forecast)
 </details>
 
-# Threshold service
+### Threshold service
 
 <details>
 <summary>RESTful API endpoints</summary>
@@ -175,7 +175,7 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/threshold)
 </details>
 
-# Alert service
+### Alert service
 
 
 <details>
@@ -197,3 +197,63 @@ this section presents the microservices design of the system.
 [RESTful API endpoints doc](/api/alert)
 </details>
 
+
+
+
+
+## Clean Architecture
+
+<img
+src={require('../img/clean_arch.png').default}
+alt="clean_arch"
+width="60%" height="60%"
+/>
+
+
+The design of all the above microservices follow the Clean Architecture. This approach separates core business logic from
+technical details, improving maintainability and scalability. The architecture is composed of multiple layers and is based on the Dependency Rule,
+meaning that outer layers depend on innermost ones but the vice versa is not true.
+
+The adopted layers are the following:
+* **Domain:** It includes entities, value objects, domain errors, and ports (interfaces).
+* **Application:** Contains application services and use cases that orchestrate business logic.
+* **Interfaces:** Exposes the microservice’s communication mechanisms and provides adapters for communication with other microservices.
+* **Presentation:** Handles data serialization and deserialization through DTOs, mappers, and validation schemas.
+* **Storage:** Manages data persistence, including repositories implementations.
+
+![general_package_organization.svg](../img/general_package_organization.svg)
+
+## Microservices Patterns
+
+### Communication patterns
+#### REST and WebSockets
+REST APIs are used for synchronous communication when a microservice needs to retrieve data required to complete a business operation.
+For real-time communication, WebSockets are used to notify other components about events, state changes, or user actions.
+
+In both cases, communication relies on text-based message formats such as JSON.
+
+#### API Gateway
+In this architecture, a reverse proxy is used instead of a classic API Gateway. The reverse proxy acts as a single
+entry point for all client requests, routing them to the appropriate microservices while hiding the internal service structure.
+
+### Deployments Patterns
+#### Service as Containers
+Each microservice is deployed as an independent Docker container. This ensures isolation between services and allows them to be deployed and scaled independently.
+
+#### Database per Service
+Each microservice owns its own database or schema, which is accessible only through its API. This approach improves isolation,
+scalability, and security, while allowing each service to choose a database technology and schema optimized for its specific needs
+
+#### Externalized configuration
+Service configuration is externalized and provided at runtime rather than hard-coded.
+A push-based model is used, where configuration values are supplied via environment variables or configuration files.
+This allows services to adapt easily to different environments, and improves maintainability.
+
+### Security patterns
+#### Access Token
+The Access Token pattern is used to secure communication between services. The system uses token-based authentication with JWT access tokens.
+
+### Observability Patterns
+#### Health-check API
+Each microservice exposes a health-check endpoint that reports its operational status. These endpoints are used for deployment-level health checks,
+enabling early detection of failures.
