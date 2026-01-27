@@ -88,11 +88,98 @@ We manage a dual-token lifecycle:
 1. **Access Token:** Short-lived (approx. 1 hour) for immediate resource authorization.
 2. **Refresh Token:** Long-lived (approx. 7 days) used to acquire new access tokens without requiring user re-credentials.
 
+## Wave Lab
+In order to test the platform, a Python application was developed to simulate smart plugs.  
+This application consists of a FastAPI-based web server, used to simulate the endpoints described in the introduction,
+and a script dedicated to starting the simulations, during which the active devices periodically send consumption data.
+
+To connect a plug to the system, it is necessary to send a `PATCH` request to the endpoint associated with the plug, specifying the `endpoint_url` field.  
+Once configured, the plugs respond by periodically sending requests of the following type:
+```json
+{
+    realTimeConsumption": 2,
+    "username": "marco",
+    "timestamp": "2026-01-21 18:32:37.891223"
+}
+```
+### Main Components
+The system is composed of three main components:
+
+- `main.py`: runs a FastAPI web server used to mock the smart furniture hookup.
+  It exposes endpoints to request device information and to configure the monitoring endpoint to which consumption data will be sent.
+
+- `run_simulation.py`: simulates the behavior of the smart furniture hookup by periodically sending data for active nodes.
+  The simulation uses a fixed consumption rate and allows basic configuration of the simulation parameters, e.g. associate a username
+to a smart furniture hookup.
+- `wavelab.py`: provides a Command Line Interface (CLI) to interact with the system.
+  It allows users to change the status of a node and retrieve information about the current state of the system.
+
+> **Note**  
+> This is a personal project developed solely for the purpose of testing the system.  As such, it does not follow production-level
+> best practices and lacks features such as CI/CD pipelines, containerization, and other supporting tools.
 ## Forecast
 The core logic resides in `RandomForestForecast.kt`. The system utilizes the **Smile** (Statistical Machine Intelligence and Learning Engine) library, leveraging the JVM's performance for mathematical operations. The chosen algorithm is a **Random Forest Regressor**, selected for its robustness against overfitting and ability to handle non-linear relationships in time-series data.
 
 The implementation employs a **Sliding Window** strategy to transform the time-series forecasting problem into a supervised learning problem.
 Key hyperparameters used in the model include approximately 100 trees and a maximum depth of 20, balancing computational cost with prediction accuracy.
+
+## Socket.io
+To implement WebSocket-based communication, Socket.IO was chosen. Socket.IO is a library that enables real-time, bidirectional,
+and event-based communication between the browser and the server.
+
+A security middleware has been added to the Socket.IO namespaces. This middleware interacts with the frontend client to validate
+connections and ensure that only authorized clients can establish and maintain secure socket connections.
+
+Three main communication channels have been designed between the Monitoring Service and the various system components:
+- `realTimeNamespace`: used by the frontend to obtain real-time data synchronized across multiple clients.
+- `utilityConsumptionsNamespace`: used by the frontend to retrieve time series of consumption data.
+- `utilityMetersNamespace`: used by the Threshold Service to retrieve various consumption counters.
+
+### Strong Typing (TypeScript)
+
+Socket.io TypeScript generics are used to define strongly typed communication interfaces.
+
+<details>
+<summary>Socket example</summary>
+
+```Typescript
+// Socket
+export type UtilityConsumptionsSocket = Socket<
+  UtilityConsumptionsClientEvents,
+  UtilityConsumptionsServersEvents
+>;
+
+// client events
+export type UtilityConsumptionsClientEvents =
+SubscribeUtilityConsumptionsEvent & EditUtilityConsumptionsQueryEvent;
+
+export interface SubscribeUtilityConsumptionsEvent {
+    subscribe: (queries: UtilityConsumptionsQueryDTO[]) => void;
+}
+
+export interface EditUtilityConsumptionsQueryEvent {
+    editQuery: (queries: UtilityConsumptionsQueryDTO) => void;
+}
+
+// server events
+export interface ErrorEvent {
+    error: (error: string) => void;
+}
+
+export interface UtilityConsumptionsUpdateEvent {
+    utilityConsumptionsUpdate: (
+        data: UtilityConsumptionsQueryResultDTO[],
+    ) => void;
+}
+
+export interface UtilityConsumptionsQueryUpdateEvent {
+    utilityConsumptionsQueryUpdate: (
+        data: UtilityConsumptionsQueryResultDTO,
+    ) => void;
+}
+```
+
+</details>
 
 ## Server-Sent Events (SSE)
 We use **Server-Sent Events (SSE)** to deliver system alerts in real-time. This protocol was chosen because it is lighter and simpler than WebSockets for one-way communication.
@@ -109,9 +196,83 @@ Instead of using standard libraries, we implemented a custom client using the na
 The client reads the raw byte stream using a `TextDecoder` and splits incoming data by the standard double-newline separator (`\n\n`) to identify messages.
 To ensure stability, the `alertStore` manages the connection state, handling clean shutdowns via `AbortController` and orchestrating reconnection attempts if the network fails.
 
-## Wave Lab
+## Influx Queries
+To support more complex queries, Flux query builders have been implemented to optimally manage filters.
+These builders allow:
+- Filtering by `utilityType` (mandatory);
+- Time-based filtering by specifying start and end timestamps;
+- Filtering by user, by specifying a `username`;
+- Filtering by zone, by specifying a `zoneID`;
+- Setting a granularity level.
+
+<details>
+<summary>Query builder example</summary>
 
 
+```typescript
+// Example: query to retrieve a consumption time series
+
+async findUtilityConsumptions(
+  utilityType: UtilityType,
+  filter?: TimeSeriesFilter,
+  tagsFilter?: TagsFilter,
+): Promise<UtilityConsumptionPoint[]> {
+    const query = ConsumptionSeriesQueryBuilder.forBucket(
+    this.influxDB.getBucket(),
+    )
+        .withUtility(utilityType)
+        .withStart(filter?.from)
+        .withStop(filter?.to)
+        .withUser(tagsFilter?.username)
+        .withZone(tagsFilter?.zoneID)
+        .withWindow(filter?.granularity)
+        .build();
+
+    const result: ConsumptionPointModel[] =
+      await this.influxDB.queryAsync(query);
+    
+    return result.map((point) => ({
+        value: point._value,
+        timestamp: new Date(point._time),
+    }));
+}
+
+/*
+Result example:
+
+import "timezone"
+option location = timezone.location(name: "Europe/Rome")
+
+from(bucket: "monitoring")
+  |> range(start: 2026-01-20T23:00:00.000Z)
+  |> filter(fn: (r) =>
+    r._measurement == "ELECTRICITY" and
+    r._field == "value" and
+    r.USERNAME == "marco" and
+    r.ZONE_ID == "2887cb54-0fdc-400b-80d3-b6187c90ad4a"
+  )
+  |> window(every: 1h, createEmpty: true)
+  |> group(columns: ["SMART_FURNITURE_HOOKUP_ID", "_start", "_stop"])
+  |> integral(unit: 1h)
+  |> group(columns: ["_start"])
+  |> sum(column: "_value")
+  |> duplicate(column: "_start", as: "_time")
+  |> window(every: inf)
+  |> keep(columns: ["_time", "_value"])
+ */
+
+```
+</details>
+
+## Onboarding
+To set up the system, an onboarding phase was implemented. This process consists of the following steps:
+1. Set up the floor plan
+2. Create zones (_optional_)
+3. Connect and place smart furniture hookups
+4. Add household users (_optional_)
+5. Configure thresholds (_optional_)
+
+All of these steps are performed in the frontend and do not add any data to the system until the onboarding phase is completed.
 
 ## Testing
 To maintain system stability and ensure a good quality product, we adopt a testing strategy focused on two main categories: **Unit Testing** and **API Testing**.
@@ -130,6 +291,7 @@ API tests verify the interaction with the microservices from an external perspec
 
 <details>
 <summary>API Test example</summary>
+
 ```typescript
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
