@@ -1,0 +1,730 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Threshold Service API",
+    "description": "API for managing consumption thresholds"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "security": [
+    {
+      "cookieAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "authToken"
+      }
+    },
+    "schemas": {
+      "Threshold": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "utilityType": {
+            "type": "string",
+            "enum": [
+              "ELECTRICITY",
+              "GAS",
+              "WATER"
+            ]
+          },
+          "thresholdType": {
+            "type": "string",
+            "enum": [
+              "ACTUAL",
+              "HISTORICAL",
+              "FORECAST"
+            ]
+          },
+          "periodType": {
+            "type": "string",
+            "enum": [
+              "ONE_DAY",
+              "ONE_WEEK",
+              "ONE_MONTH"
+            ]
+          },
+          "value": {
+            "type": "number"
+          },
+          "thresholdState": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "DISABLED",
+              "BREACHED"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "utilityType",
+          "thresholdType",
+          "value",
+          "thresholdState"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/api/thresholds": {
+      "post": {
+        "tags": [
+          "Thresholds"
+        ],
+        "summary": "Create a new threshold",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "utilityType": {
+                    "type": "string",
+                    "enum": [
+                      "ELECTRICITY",
+                      "GAS",
+                      "WATER"
+                    ]
+                  },
+                  "thresholdType": {
+                    "type": "string",
+                    "enum": [
+                      "ACTUAL",
+                      "HISTORICAL",
+                      "FORECAST"
+                    ]
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "thresholdState": {
+                    "type": "string",
+                    "enum": [
+                      "ENABLED",
+                      "DISABLED",
+                      "BREACHED"
+                    ]
+                  },
+                  "periodType": {
+                    "type": "string",
+                    "enum": [
+                      "ONE_DAY",
+                      "ONE_WEEK",
+                      "ONE_MONTH"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "utilityType",
+                  "thresholdType",
+                  "value"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Threshold created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "utilityType": {
+                      "type": "string",
+                      "enum": [
+                        "ELECTRICITY",
+                        "GAS",
+                        "WATER"
+                      ]
+                    },
+                    "thresholdType": {
+                      "type": "string",
+                      "enum": [
+                        "ACTUAL",
+                        "HISTORICAL",
+                        "FORECAST"
+                      ]
+                    },
+                    "periodType": {
+                      "type": "string",
+                      "enum": [
+                        "ONE_DAY",
+                        "ONE_WEEK",
+                        "ONE_MONTH"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "thresholdState": {
+                      "type": "string",
+                      "enum": [
+                        "ENABLED",
+                        "DISABLED",
+                        "BREACHED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "utilityType",
+                    "thresholdType",
+                    "value",
+                    "thresholdState"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "409": {
+            "description": "Threshold name already exists"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Thresholds"
+        ],
+        "summary": "List thresholds with filters",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": false,
+            "name": "name",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ELECTRICITY",
+                "GAS",
+                "WATER"
+              ]
+            },
+            "required": false,
+            "name": "utilityType",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTUAL",
+                "HISTORICAL",
+                "FORECAST"
+              ]
+            },
+            "required": false,
+            "name": "thresholdType",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED",
+                "BREACHED"
+              ]
+            },
+            "required": false,
+            "name": "thresholdState",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ONE_DAY",
+                "ONE_WEEK",
+                "ONE_MONTH"
+              ]
+            },
+            "required": false,
+            "name": "periodType",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of thresholds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "utilityType": {
+                        "type": "string",
+                        "enum": [
+                          "ELECTRICITY",
+                          "GAS",
+                          "WATER"
+                        ]
+                      },
+                      "thresholdType": {
+                        "type": "string",
+                        "enum": [
+                          "ACTUAL",
+                          "HISTORICAL",
+                          "FORECAST"
+                        ]
+                      },
+                      "periodType": {
+                        "type": "string",
+                        "enum": [
+                          "ONE_DAY",
+                          "ONE_WEEK",
+                          "ONE_MONTH"
+                        ]
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "thresholdState": {
+                        "type": "string",
+                        "enum": [
+                          "ENABLED",
+                          "DISABLED",
+                          "BREACHED"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "utilityType",
+                      "thresholdType",
+                      "value",
+                      "thresholdState"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/thresholds/{id}": {
+      "get": {
+        "tags": [
+          "Thresholds"
+        ],
+        "summary": "Get a threshold by ID",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Threshold details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "utilityType": {
+                      "type": "string",
+                      "enum": [
+                        "ELECTRICITY",
+                        "GAS",
+                        "WATER"
+                      ]
+                    },
+                    "thresholdType": {
+                      "type": "string",
+                      "enum": [
+                        "ACTUAL",
+                        "HISTORICAL",
+                        "FORECAST"
+                      ]
+                    },
+                    "periodType": {
+                      "type": "string",
+                      "enum": [
+                        "ONE_DAY",
+                        "ONE_WEEK",
+                        "ONE_MONTH"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "thresholdState": {
+                      "type": "string",
+                      "enum": [
+                        "ENABLED",
+                        "DISABLED",
+                        "BREACHED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "utilityType",
+                    "thresholdType",
+                    "value",
+                    "thresholdState"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Threshold not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Thresholds"
+        ],
+        "summary": "Update a threshold",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "utilityType": {
+                    "type": "string",
+                    "enum": [
+                      "ELECTRICITY",
+                      "GAS",
+                      "WATER"
+                    ]
+                  },
+                  "thresholdType": {
+                    "type": "string",
+                    "enum": [
+                      "ACTUAL",
+                      "HISTORICAL",
+                      "FORECAST"
+                    ]
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "thresholdState": {
+                    "type": "string",
+                    "enum": [
+                      "ENABLED",
+                      "DISABLED",
+                      "BREACHED"
+                    ]
+                  },
+                  "periodType": {
+                    "type": "string",
+                    "enum": [
+                      "ONE_DAY",
+                      "ONE_WEEK",
+                      "ONE_MONTH"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Threshold updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "utilityType": {
+                      "type": "string",
+                      "enum": [
+                        "ELECTRICITY",
+                        "GAS",
+                        "WATER"
+                      ]
+                    },
+                    "thresholdType": {
+                      "type": "string",
+                      "enum": [
+                        "ACTUAL",
+                        "HISTORICAL",
+                        "FORECAST"
+                      ]
+                    },
+                    "periodType": {
+                      "type": "string",
+                      "enum": [
+                        "ONE_DAY",
+                        "ONE_WEEK",
+                        "ONE_MONTH"
+                      ]
+                    },
+                    "value": {
+                      "type": "number"
+                    },
+                    "thresholdState": {
+                      "type": "string",
+                      "enum": [
+                        "ENABLED",
+                        "DISABLED",
+                        "BREACHED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "utilityType",
+                    "thresholdType",
+                    "value",
+                    "thresholdState"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Threshold not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Thresholds"
+        ],
+        "summary": "Delete a threshold",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Threshold deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/internal/thresholds/evaluations/forecast": {
+      "post": {
+        "tags": [
+          "Internal"
+        ],
+        "summary": "Evaluate forecast aggregations against thresholds",
+        "security": [
+
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilityType": {
+                    "type": "string",
+                    "enum": [
+                      "ELECTRICITY",
+                      "GAS",
+                      "WATER"
+                    ]
+                  },
+                  "aggregations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "periodType": {
+                          "type": "string",
+                          "enum": [
+                            "ONE_DAY",
+                            "ONE_WEEK",
+                            "ONE_MONTH"
+                          ]
+                        },
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        }
+                      },
+                      "required": [
+                        "periodType",
+                        "value"
+                      ]
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "utilityType",
+                  "aggregations"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "List of breached thresholds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "utilityType": {
+                        "type": "string",
+                        "enum": [
+                          "ELECTRICITY",
+                          "GAS",
+                          "WATER"
+                        ]
+                      },
+                      "thresholdType": {
+                        "type": "string",
+                        "enum": [
+                          "ACTUAL",
+                          "HISTORICAL",
+                          "FORECAST"
+                        ]
+                      },
+                      "periodType": {
+                        "type": "string",
+                        "enum": [
+                          "ONE_DAY",
+                          "ONE_WEEK",
+                          "ONE_MONTH"
+                        ]
+                      },
+                      "value": {
+                        "type": "number"
+                      },
+                      "thresholdState": {
+                        "type": "string",
+                        "enum": [
+                          "ENABLED",
+                          "DISABLED",
+                          "BREACHED"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "utilityType",
+                      "thresholdType",
+                      "value",
+                      "thresholdState"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

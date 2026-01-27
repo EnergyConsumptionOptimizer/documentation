@@ -1,6 +1,8 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type * as Plugin from "@docusaurus/types/src/plugin";
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -17,7 +19,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ['@docusaurus/theme-mermaid', "docusaurus-theme-openapi-docs"],
 
   // Set the production url of your site here
   url: 'https://energyconsumptionoptimizer.github.io/',
@@ -47,16 +49,70 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: "/",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+          // REMOVED: docItemComponent: "@theme/ApiItem"
         },
         theme: {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
     ],
+    [
+      "redocusaurus",
+      {
+        specs: [
+          {
+            spec: "./docs/api/openapi/User_openapi.json",
+            route: "/api/user",
+          },
+          {
+            spec: "./docs/api/openapi/Hookup_openapi.json",
+            route: "/api/hookup",
+          },
+          {
+            spec: "./docs/api/openapi/Map_openapi.json",
+            route: "/api/map",
+          },
+          {
+            spec: "./docs/api/openapi/Monitoring_openapi.json",
+            route: "/api/monitoring",
+          },
+          {
+            spec: "./docs/api/openapi/Forecast_openapi.json",
+            route: "/api/forecast",
+          },
+          {
+            spec: "./docs/api/openapi/Threshold_openapi.json",
+            route: "/api/threshold",
+          },
+          {
+            spec: "./docs/api/openapi/Alert_openapi.json",
+            route: "/api/alert",
+          }
+        ],
+        theme: {
+          primaryColor: "#1890ff",
+        },
+      },
+    ]
   ],
-
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: "api", // plugin id
+        docsPluginId: "classic", // configured for preset-classic
+        config: {
+          petstore: {
+            specPath: "examples/petstore.yaml",
+            outputDir: "docs/petstore",
+            sidebarOptions: {
+              groupPathsBy: "tag",
+            },
+          } satisfies OpenApiPlugin.Options,
+        }
+      },
+    ]
+  ],
   themeConfig: {
     navbar: {
       title: 'E.C.O.',

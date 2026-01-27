@@ -1,0 +1,207 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Forecast Service API",
+    "version": "latest",
+    "description": "Energy consumption forecasting service using Random Forest algorithm"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "description": "Returns the service health status",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/forecasts": {
+      "get": {
+        "summary": "Get all forecasts or filter by utility type",
+        "description": "Retrieves energy consumption forecasts. Can be filtered by utility type using query parameter.",
+        "tags": ["Forecasts"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "utilityType",
+            "in": "query",
+            "description": "Optional filter by utility type (ELECTRICITY, GAS, WATER)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["ELECTRICITY", "GAS", "WATER"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of forecasts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required - missing or invalid authToken cookie"
+          }
+        }
+      }
+    },
+    "/api/forecasts/{utilityType}": {
+      "get": {
+        "summary": "Get forecast by specific utility type",
+        "description": "Retrieves the forecast for a specific utility type (ELECTRICITY, GAS, or WATER)",
+        "tags": ["Forecasts"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "utilityType",
+            "in": "path",
+            "description": "The utility type: ELECTRICITY, GAS, or WATER",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["ELECTRICITY", "GAS", "WATER"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Forecast for the specified utility type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required - missing or invalid authToken cookie"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "authToken"
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "OK"
+          }
+        },
+        "required": ["status"]
+      },
+      "ForecastListResponse": {
+        "type": "object",
+        "properties": {
+          "forecasts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ForecastResponse"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of forecasts included in the response"
+          }
+        },
+        "required": ["forecasts", "count"]
+      },
+      "ForecastResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Forecast identifier"
+          },
+          "utilityType": {
+            "type": "string",
+            "enum": ["ELECTRICITY", "GAS", "WATER"],
+            "description": "The reported utility type"
+          },
+          "dataPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPointResponse"
+            },
+            "description": "Ordered list of daily predictions"
+          },
+          "computedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the forecast was computed"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "First date included in the forecast range"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Last date included in the forecast range"
+          },
+          "durationDays": {
+            "type": "integer",
+            "description": "Duration of the forecast in days (inclusive)"
+          }
+        },
+        "required": ["id", "utilityType", "dataPoints", "computedAt", "startDate", "endDate", "durationDays"]
+      },
+      "DataPointResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "The day the prediction refers to"
+          },
+          "predictedConsumption": {
+            "type": "number",
+            "format": "double",
+            "description": "Raw predicted consumption value for the day"
+          }
+        },
+        "required": ["date", "predictedConsumption"]
+      }
+    }
+  }
+}

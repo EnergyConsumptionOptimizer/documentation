@@ -1,0 +1,733 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Map Service API",
+    "version": "latest",
+    "description": "House map and zone management service for energy consumption optimization"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "description": "Returns the service health status",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/house-map": {
+      "get": {
+        "summary": "Get complete house map",
+        "description": "Retrieves the complete house map including floor plan, zones, and smart furniture hookups",
+        "tags": ["House Map"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "House map data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseMapDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      }
+    },
+    "/api/floor-plan": {
+      "get": {
+        "summary": "Get floor plan",
+        "description": "Retrieves the current floor plan",
+        "tags": ["Floor Plan"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Floor plan data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FloorPlanDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Floor plan not found"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "post": {
+        "summary": "Upload floor plan SVG",
+        "description": "Uploads a new floor plan as SVG content (Admin only)",
+        "tags": ["Floor Plan"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadSvgRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Floor plan created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FloorPlanDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      }
+    },
+    "/api/zones": {
+      "get": {
+        "summary": "Get all zones",
+        "description": "Retrieves all defined zones in the house map",
+        "tags": ["Zones"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of zones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZonesDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new zone",
+        "description": "Creates a new zone with specified properties (Admin only)",
+        "tags": ["Zones"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateZoneRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Zone created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      }
+    },
+    "/api/zones/{id}": {
+      "get": {
+        "summary": "Get zone by ID",
+        "description": "Retrieves a specific zone by its identifier",
+        "tags": ["Zones"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Zone identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zone data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Zone not found"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update zone",
+        "description": "Updates zone properties (Admin only)",
+        "tags": ["Zones"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Zone identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateZoneRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Zone updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Zone not found"
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete zone",
+        "description": "Deletes a zone (Admin only)",
+        "tags": ["Zones"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Zone identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Zone deleted successfully"
+          },
+          "404": {
+            "description": "Zone not found"
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      }
+    },
+    "/api/smart-furniture-hookups": {
+      "get": {
+        "summary": "Get all smart furniture hookups",
+        "description": "Retrieves all smart furniture hookup points",
+        "tags": ["Smart Furniture Hookups"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of hookups",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmartFurnitureHookupsDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create smart furniture hookup",
+        "description": "Creates a new smart furniture hookup point (Admin only)",
+        "tags": ["Smart Furniture Hookups"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSmartFurnitureHookupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hookup created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      }
+    },
+    "/api/smart-furniture-hookups/{id}": {
+      "get": {
+        "summary": "Get smart furniture hookup by ID",
+        "description": "Retrieves a specific hookup by its identifier",
+        "tags": ["Smart Furniture Hookups"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Hookup identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hookup data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hookup not found"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update smart furniture hookup",
+        "description": "Updates hookup properties (Admin only)",
+        "tags": ["Smart Furniture Hookups"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Hookup identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSmartFurnitureHookupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hookup updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hookup not found"
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete smart furniture hookup",
+        "description": "Deletes a hookup (Admin only)",
+        "tags": ["Smart Furniture Hookups"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Hookup identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Hookup deleted successfully"
+          },
+          "404": {
+            "description": "Hookup not found"
+          },
+          "401": {
+            "description": "Admin authentication required"
+          }
+        }
+      }
+    },
+    "/api/internal/smart-furniture-hookups/{id}": {
+      "get": {
+        "summary": "Get smart furniture hookup by ID (Internal)",
+        "description": "Internal endpoint to retrieve a specific hookup by its identifier without cookie authentication",
+        "tags": [
+          "Internal - Smart Furniture Hookup"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Hookup identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hookup data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hookup not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "authToken"
+      }
+    },
+    "schemas": {
+      "HouseMapDTO": {
+        "type": "object",
+        "properties": {
+          "floorPlan": {
+            "$ref": "#/components/schemas/FloorPlanDTO"
+          },
+          "zones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ZoneDTO"
+            }
+          },
+          "smartFurnitureHookups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+            }
+          }
+        },
+        "required": ["floorPlan", "zones", "smartFurnitureHookups"]
+      },
+      "FloorPlanDTO": {
+        "type": "object",
+        "properties": {
+          "svgContent": {
+            "type": "string",
+            "description": "SVG content of the floor plan"
+          }
+        },
+        "required": ["svgContent"]
+      },
+      "UploadSvgRequest": {
+        "type": "object",
+        "properties": {
+          "svgContent": {
+            "type": "string",
+            "description": "SVG content for the floor plan"
+          }
+        },
+        "required": ["svgContent"]
+      },
+      "ZonesDTO": {
+        "type": "object",
+        "properties": {
+          "zones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ZoneDTO"
+            }
+          }
+        },
+        "required": ["zones"]
+      },
+      "ZoneDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Zone identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Zone name"
+          },
+          "color": {
+            "type": "string",
+            "description": "Zone color in hex format"
+          },
+          "vertices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointDTO"
+            },
+            "description": "Polygon vertices defining the zone"
+          }
+        },
+        "required": ["id", "name", "color", "vertices"]
+      },
+      "CreateZoneRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string",
+            "description": "Color in hex format"
+          },
+          "vertices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointDTO"
+            }
+          }
+        },
+        "required": ["name", "color", "vertices"]
+      },
+      "UpdateZoneRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "vertices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointDTO"
+            }
+          }
+        }
+      },
+      "SmartFurnitureHookupsDTO": {
+        "type": "object",
+        "properties": {
+          "smartFurnitureHookups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SmartFurnitureHookupDTO"
+            }
+          }
+        },
+        "required": ["smartFurnitureHookups"]
+      },
+      "SmartFurnitureHookupDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Hookup identifier"
+          },
+          "position": {
+            "$ref": "#/components/schemas/PointDTO"
+          },
+          "zoneID": {
+            "type": "string",
+            "nullable": true,
+            "description": "Associated zone ID"
+          }
+        },
+        "required": ["id", "position"]
+      },
+      "CreateSmartFurnitureHookupRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "position": {
+            "$ref": "#/components/schemas/PointDTO"
+          },
+          "zoneID": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["id", "position"]
+      },
+      "UpdateSmartFurnitureHookupRequest": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/PointDTO"
+          },
+          "zoneID": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PointDTO": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number",
+            "format": "double"
+          },
+          "y": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["x", "y"]
+      }
+    }
+  }
+}
