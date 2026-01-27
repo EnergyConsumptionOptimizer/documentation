@@ -76,12 +76,13 @@ gitHooks {
 
 ```
 ### Semantic Versioning and Release
-We use Semantic Versioning (SemVer) to version the software. The version number is computed automatically 
-by the CI/CD pipeline.
+We use Semantic Versioning (SemVer) to version the software. The version number is computed during the build process through the "Git Sensitive
+Semantic Versioning" Gradle Plugin configured with the "Conventional Commit Strategy for Git Sensitive Semantic Versioning" Gradle Plugin
 
-In particular, we rely on automated plugins to manage the release process. These tools analyze the (conventional) commit
-messages and determine the next version of the software based on the changes introduced in the codebase (e.g., a fix
-triggers a PATCH, a feat triggers a MINOR). The process also generates a changelog and creates a new release on GitHub.
+To automate the release process, Semantic Release plugin has been integrated into the CI/CD pipeline. The plugin is empowered with 
+"semantic-release-preconfigured-conventional-commit" configuration preset. The plugin automatically inspects the (conventional) commit messages,
+determine the next version, produces a release version accordingly, and publishes it into the GitHub Releases.
+
 
 ## Project Scaffolding
 To standardize the creation of new services and reduce setup time, we leverage GitHub Template Repositories.
