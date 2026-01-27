@@ -15,15 +15,15 @@ After the event storming session, the following contexts have been identified:
 
 ## User context
 This context is responsible for managing the authentication and authorization of all users, as well as user account creation and lifecycle management.
-Each account includes a unique username that has two purpose:
-- Recognize the administrator account that will have the "admin" username;
+Each account includes a unique `Username` that has two purpose:
+- Recognize the administrator account that will have the `admin` username;
 - Associates utility consumption data with a specific household user, so that the utility consumption filter can be achieved.
 
-Authentication is handled by validating each user’s credentials (username and password). Users may change their own password at any time;
-however, only household users can update their username, and only the admin has the ability to reset his password.
+Authentication is handled by validating each user’s credentials (`Username` and `Password`). Users may change their own password at any time;
+however, only household users can update their `Username`, and only the admin has the ability to reset his `Password`.
 The admin also manages household user’s accounts by creating, editing, and deleting them.
 The authentication management responsibilities also include creating and terminating sessions.  
-The authorization is handled through a permission system which uses a role model, where the roles can be only “admin” or “household user”.
+The authorization is handled through a permission system which uses a role model, where the roles can be only `admin` or `household user`.
 
 ![user-ddd.svg](../img/uml/user-ddd.svg)
 
@@ -34,7 +34,7 @@ The authorization is handled through a permission system which uses a role model
 |:---------------|:----------------------------------|
 | Login          | Authenticate a User               |
 | Logout         | Logout the user from the platform |
-| ChangePassword | Update user’s password            |
+| ChangePassword | Update user’s `Password`          |
 
 **Commands triggered by the admin:**
 
@@ -43,13 +43,13 @@ The authorization is handled through a permission system which uses a role model
 | CreateHouseholdUser | Create a new household user                 |
 | DeleteHouseholdUser | Delete an existing household user           |
 | UpdateHouseholdUser | Edit an existing household user information |
-| ResetPassword       | Reset password with a new one               |
+| ResetPassword       | Reset `Password` with a new one             |
 
 **Commands triggered by an household user:**
 
-| Command        | Description         |
-|:---------------|:--------------------|
-| ChangeUsername | Update own username |
+| Command        | Description           |
+|:---------------|:----------------------|
+| ChangeUsername | Update own `Username` |
 
 ### Events
 **Outbound events:**
@@ -58,13 +58,13 @@ The authorization is handled through a permission system which uses a role model
 - _HouseholdUserCreated_: emitted when the admin creates a new household user
 - _HouseholdUserUpdated_: emitted when the admin edits a household user’s information
 - _HouseholdUserDeleted_: emitted when the admin deletes a household user
-- _PasswordChanged_: emitted when the user's password is updated
-- _UsernameChanged_: emitted when the household user's username is updated
+- _PasswordChanged_: emitted when the user's `Password` is updated
+- _UsernameChanged_: emitted when the household user's `Username` is updated
 
 ## Smart Furniture Hookup context
 This context is responsible for managing the registration, configuration, and lifecycle of connections to smart furniture hookups within the system.
-It acts as the "Digital Twin" registry. To register a smart furniture hookup, the admin provides the endpoint of the smart furniture hookup,
-a unique name, and the utility type. Thought that endpoint, the physical smart furniture hookup should be notified where to transmit his consumptions.
+It acts as the "Digital Twin" registry. To register a smart furniture hookup, the admin provides the `Endpoint` of the smart furniture hookup,
+a unique name, and the utility type. Thought that `Endpoint`, the physical smart furniture hookup should be notified where to transmit his consumptions.
 
 ![sfh_ddd.svg](../img/uml/sfh_ddd.svg)
 
@@ -79,16 +79,16 @@ a unique name, and the utility type. Thought that endpoint, the physical smart f
 
 ### Events
 **Outbound events:**
-- _SmartFurnitureHookupCreated_: emitted when the admin creates a new smart furniture hookup
+- _SmartFurnitureHookupCreated_: emitted when the admin creates new smart furniture hookup
 - _SmartFurnitureHookupDeleted_: emitted when the admin edits a smart furniture hookup
 - _SmartFurnitureHookupUpdated_: emitted when the admin deletes a smart furniture hookup
 
 ## Map context
 This context is responsible for managing the floor plan, the zones and the placement of smart furniture hookups.
 Its primary duties include storing the floor plan, in an SVG format, the zones, and the position of smart furniture hookups.
-It should use (x,y) coordinate to manage the position of the elements of the map. To create a zone, the admin should provide a unique name, color,
+It should use `(x,y)` coordinate to manage the position of the elements of the map. To create a zone, the admin should provide a unique `Name`, `Color`,
 and the coordinate of the vertices of the geometric definition of zone. Additionally, it manages the relationship logic that automatically
-assigns a hookup to a zone based on its coordinates, updating these associations when the map element change.
+assigns a smart furniture hookup to a zone based on its coordinates, updating these associations when the map element change.
 To keep the integrity of the map, the floor plan can be updated only once.
 
 ![map_ddd.svg](../img/uml/map_ddd.svg)
@@ -117,7 +117,7 @@ To keep the integrity of the map, the floor plan can be updated only once.
 - _SmartFurnitureHookupDeleted_: received when a smart furniture hookup is deleted in the smart furniture hookup context.
 
 **Outbound events:**
-- _FloorplanUploaded_: emitted when the admin uploads the file of the floorplan.
+- _FloorplanUploaded_: emitted when the admin uploads the file of the floor plan.
 - _ZoneCreated_: emitted when the admin creates a new zone.
 - _ZoneUpdated_: emitted when the admin updates the information of an existing zone.
 - _ZoneDeleted_: emitted when the admin deletes a zone.
@@ -127,16 +127,17 @@ To keep the integrity of the map, the floor plan can be updated only once.
 ## Monitoring context
 This context is responsible for ingesting, storing and queering, utility consumption from each physical smart furniture hookup,
 and for providing query capabilities over the collected data.
-It performs data validation by verifying that each received measurement contains a valid smart furniture hookup ID and,
-when a username is provided, that the corresponding household user account exists.
+It performs data validation by verifying that each received measurement contains a valid `SmartFurnitureHookupID` and,
+when a `Username` is provided, that the corresponding household user account exists.
 Additionally, it informs each physical smart furniture hookup of the endpoint to which it should send its data.
+
 Another key responsibility is querying the collected data in order to aggregate, filter, and retrieve real-time consumption information.
 
 ![monitoring_ddd.svg](../img/uml/monitoring_ddd.svg)
 
-_About DDD_: In this context, we deliberately avoid defining aggregate roots or entities.
-This decision lies in the absence of any requirement to retrieve, update, or delete individual measurements.
-Instead, measurements are accessed exclusively through queries that operate on aggregated data.
+> _About DDD_: In this context, we deliberately avoid defining aggregate roots or entities.
+> This decision lies in the absence of any requirement to retrieve, update, or delete individual measurements.
+> Instead, measurements are accessed exclusively through queries that operate on aggregated data.
 
 
 ### Commands
