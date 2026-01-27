@@ -29,6 +29,7 @@ The decomposition strategy that we used is by bounded contexts. Here are the ser
 - **Forecasting service:** It will handle the Forecasting Context functionalities and exposes them through RESTful API endpoints.
     - Communication with other services:
       - It should periodically fetch historical utility consumptions from the Monitoring Service via REST API endpoints to train/update its models.
+      - It should send requests to the Threshold Service to submit generated forecast aggregations for the evaluation of forecasted thresholds
 - **Threshold service:**  It will handle the Threshold Context functionalities and exposes them through RESTful API endpoints.
   - Communication with other services:
     - It should consume utility meter data from the Monitoring Service in real-time via WebSockets to evaluate active rules.
