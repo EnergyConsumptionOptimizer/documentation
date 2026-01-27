@@ -7,6 +7,7 @@ import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
@@ -23,6 +24,20 @@ function HomepageHeader() {
             to="/report/intro">
             See the documentation
           </Link>
+        </div>
+
+        <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '40px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <h3>Onboarding</h3>
+            <iframe src="https://drive.google.com/file/d/1XdJVLxV8vUFq3_9CgL3FuuBSVYq2qpah/preview" width="560" height="315"
+                    allow="autoplay; fullscreen"></iframe>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <h3>Demo</h3>
+            <iframe src="https://drive.google.com/file/d/1pH1Q7gesTCMjnp-xQNruKuKvh5zTLuSJ/preview" width="560" height="315"
+                    allow="autoplay; fullscreen"></iframe>
+          </div>
         </div>
       </div>
     </header>
