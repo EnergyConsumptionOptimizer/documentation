@@ -26,3 +26,5 @@ From a functional standpoint, the outlets perform continuous consumption monitor
 In addition, in order to simplify the interpretation of state change events, the outlets transmit consumption values equal to zero during power-on and power-off phases.
 
 Finally, these outlets can associate their consumption data with a *username* tag representing the household user currently using the device.
+
+![sfh_device_cc.svg](./img/uml/sfh_device_cc.svg)
