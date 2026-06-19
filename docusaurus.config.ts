@@ -141,7 +141,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'SPE Report',
+              label: 'SAP Report',
               to: '/report/intro',
             },
           ],
