@@ -43,8 +43,8 @@ Below is the detailed breakdown of the technologies used for each part of the sy
     * Persistence: MongoDB
     * Deployment: Docker
 * **Map Microservice**
-    * Language: Kotlin
-    * Backend: JVM and Ktor
+    * Language: TypeScript
+    * Backend: Node.js and Express
     * Persistence: MongoDB
     * Deployment: Docker
 * **Forecast Microservice**
