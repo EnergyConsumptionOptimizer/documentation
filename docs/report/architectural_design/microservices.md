@@ -64,7 +64,7 @@ enabling early detection of failures.
 ## User Microservice
 ![user_service_cc.svg](../img/cc/user_service_cc.svg)
 
-### External communication:
+### External communication
 - Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage user account.
 - Direct-routes from the API Gateway to handle authentication requests
 
@@ -92,7 +92,7 @@ enabling early detection of failures.
 [RESTful API endpoints doc](/api/user)
 </details>
 
-### API REST communication:
+### Internal API REST communication
 - Responds to requests from the Monitoring Service to look up usernames for existing household users.
 
 <details>
@@ -105,13 +105,12 @@ enabling early detection of failures.
 [RESTful API endpoints doc](/api/user)
 </details>
 
-### Event architecture:
+### Event architecture
 - Publishes user creation and deletion events using the outbox pattern, which are consumed by the Monitoring Service.
 
 <details>
 <summary>User Events</summary>
 
-**Internal - Users**
 * `UserCreatedEvent`: emitted when the admin creates a new household user
 * `UserDeletedEvent`: emitted when the admin deletes a household user
 
@@ -121,7 +120,6 @@ enabling early detection of failures.
 
 <details>
 <summary>User account management</summary>
-
 
 ```gherkin
 Feature: User account management
@@ -155,47 +153,42 @@ Feature: User account management
     Then the administrator can authenticate using the new password
 ```
 </details>
-
-## Hookup Microservice
-
-## API Design
-### User service
-
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Authentication</summary>
 
-**Authentication**
-  * `POST /api/auth/login`: Authenticate a user with username and password.
-  * `POST /api/auth/logout`: Clear authentication cookies and logout the user.
-  * `POST /api/auth/refresh`: Refresh the access token using the refresh token from cookies.
-  * `GET /api/auth/verify`: Verify the current user's authentication status.
 
-**Users**
-  * `GET /api/users/{id}`: Retrieve a user by their unique identifier.
-  * `PATCH /api/users/{id}/password`: Update the password for a specific user (requires ownership or admin role).
+```gherkin
+Feature: Authentication
 
-**Household Users**
-* `GET /api/household-users`: Retrieve a list of all household users.
-* `POST /api/household-users`: Create a new household user (requires admin role).
-* `PATCH /api/household-users/{id}/username`: Update the username for a specific household user (requires ownership or admin role).
-* `DELETE /api/household-users/{id}`: Delete a specific household user (requires admin role).
+  Scenario: Household user logs in
+    Given a household user account exists
+    When the user logs in with valid credentials
+    Then the user is authenticated
+    And the user's account information is returned
 
-**Admin**
-* `POST /api/admin/reset-password`: Reset the admin password using a reset code.
+  Scenario: Administrator logs in
+    Given an administrator account exists
+    When the administrator logs in with valid credentials
+    Then the administrator is authenticated
+    And the administrator's account information is returned
 
-**Internal - Authentication**
-* `GET /api/internal/auth/verify`: Internal endpoint to verify authentication status.
-* `GET /api/internal/auth/verify-admin`: Internal endpoint to verify admin authentication status.
-
-**Internal - Users**
-* `GET /api/internal/users/{username}`: Internal endpoint to retrieve a user by their username.
-
-[RESTful API endpoints doc](/api/user)
+  Scenario: User logs out
+    Given an authenticated user
+    When the user logs out
+    Then the user is no longer authenticated
+```
 </details>
 
-### Smart Furniture Hookup service
+## Hookup Microservice
+![hookup_service_cc.svg](../img/cc/hookup_service_cc.svg)
+
+
+### External communication
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage smart furniture hookups.
+- Sends requests to physical smart furniture hookups to set, update or remove the measurements destination endpoint.
+
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Public RESTful API endpoints</summary>
 
 **Smart Furniture Hookups**
 * `GET /api/smart-furniture-hookups`: Retrieve a list of all registered smart furniture hookups.
@@ -204,15 +197,72 @@ Feature: User account management
 * `PATCH /api/smart-furniture-hookups/{id}`: Update the name or endpoint of an existing hookup.
 * `DELETE /api/smart-furniture-hookups/{id}`: Remove a smart furniture hookup from the system.
 
-**Internal**
-* `GET /api/internal/smart-furniture-hookups/{id}`: Retrieve hookup details by ID.
+[RESTful API endpoints doc](/api/hookup)
+</details>
+
+### Internal API REST communication
+- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
+**Internal - Users**
+* `GET /api/internal/smart-furniture-hookups/{id}`:  Internal endpoint to retrieve hookup details by ID.
+* `GET /api/internal/smart-furniture-hookups/`: Internal endpoint to retrieve all hookups.
 
 [RESTful API endpoints doc](/api/hookup)
 </details>
 
-### Map service
+### Event architecture
+- Publishes hookup creation and deletion events using the outbox pattern, which are consumed by the Monitoring and Map Service.
+
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Hookup Events</summary>
+* `HookupCreatedEvent`: emitted when the admin creates new smart furniture hookup
+* `HookupDeletedEvent`: emitted when the admin deletes a smart furniture hookup
+
+</details>
+
+### Behavior
+
+<details>
+<summary>Smart furniture hookup management</summary>
+
+
+```gherkin
+Feature: Smart furniture hookup management
+
+  Scenario: Create a smart furniture hookup
+    Given an authenticated administrator
+    And a smart furniture hookup name that is not already in use
+    And an endpoint that is not already in use
+    When the administrator creates a smart furniture hookup
+    Then the smart furniture hookup exists
+
+
+  Scenario: Update a smart furniture hookup
+    Given an existing smart furniture hookup
+    And an authenticated administrator
+    When the administrator updates the hookup details
+    Then the smart furniture hookup reflects the updated details
+
+  Scenario: Delete a smart furniture hookup
+    Given an existing smart furniture hookup
+    And an authenticated administrator
+    When the administrator deletes the smart furniture hookup
+    Then the smart furniture hookup no longer exists
+```
+</details>
+
+## Map Microservice
+![map_service_cc.svg](../img/cc/map_service_cc.svg)
+
+
+### External communication
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage the map.
+
+<details>
+<summary>Public RESTful API endpoints</summary>
 
 **House Map**
 * `GET /api/house-map`: Retrieve the complete house map (Floor plan + Zones + Smart Furniture Hookups).
@@ -239,62 +289,265 @@ Feature: User account management
 * `DELETE /api/smart-furniture-hookups/{id}`: Remove a smart furniture hookup.
 
 
+[RESTful API endpoints doc](/api/map)
+</details>
+
+### Internal API REST communication
+- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
 **Internal - Smart Furniture Hookups**
-* `GET /api/internal/smart-furniture-hookups/{id}`: Retrieve smart furniture hookup details by ID.
+* `GET /api/internal/smart-furniture-hookups/{id}`: Internal endpoint to retrieve hookup map details by ID.
+* `GET /api/internal/smart-furniture-hookups/`: Internal endpoint to retrieve all hookups.
 
 [RESTful API endpoints doc](/api/map)
 </details>
 
-### Monitoring service
+### Event architecture
+- Listens for hookup creation and deletion events from the Hookup Service.
+- Publishes zone creation and deletion events and hookup's zone changed event using the outbox pattern, which are consumed by the Monitoring Service.
+
+<details>
+<summary>Map Inbound Events</summary>
+* `SmartFurnitureHookupCreated`:  received when a smart furniture hookup is created in the hookup service
+* `SmartFurnitureHookupCreated`: received when a smart furniture hookup is deleted in the hookup service
+</details>
+
+<details>
+<summary>Map Outbound Events</summary>
+* `SmartFurnitureHookupZoneUpdated`: emitted when the system updates the smart furniture hookup’s assigned zone.
+</details>
+
+### Behavior
+
+<details>
+<summary>Floor plan management</summary>
+
+```gherkin
+Feature: Floor plan management
+
+  Scenario: Upload a floor plan
+    Given an authenticated administrator
+    And a valid floor plan
+    When the administrator uploads the floor plan
+    Then the floor plan is available in the house map
+
+  Scenario: Replace an existing floor plan
+    Given an existing floor plan
+    And an authenticated administrator
+    When the administrator uploads a new floor plan
+    Then the new floor plan becomes the active floor plan
+
+  Scenario: View the floor plan
+    Given a floor plan exists
+    And an authenticated user
+    When the user requests the floor plan
+    Then the floor plan is returned
+```
+</details>
+
+<details>
+<summary>Zone management</summary>
+
+```gherkin
+Feature: Zone management
+
+  Scenario: Create a zone
+    Given an authenticated administrator
+    When the administrator creates a zone
+    Then the zone exists in the house map
+
+  Scenario: View all zones
+    Given one or more zones exist
+    And an authenticated user
+    When the user requests the list of zones
+    Then all zones are returned
+
+  Scenario: View a zone
+    Given an existing zone
+    And an authenticated user
+    When the user requests the zone
+    Then the zone details are returned
+
+  Scenario: Update a zone
+    Given an existing zone
+    And an authenticated administrator
+    When the administrator updates the zone
+    Then the zone reflects the updated details
+
+  Scenario: Delete a zone
+    Given an existing zone
+    And an authenticated administrator
+    When the administrator deletes the zone
+    Then the zone no longer exists
+```
+</details>
+
+<details>
+<summary>Smart furniture hookup position</summary>
+
+```gherkin
+Feature: Smart furniture hookup position
+
+  Scenario: View all smart furniture hookups
+    Given one or more smart furniture hookups have been placed
+    And an authenticated user
+    When the user requests the list of smart furniture hookups
+    Then all placed smart furniture hookups are returned
+
+  Scenario: View a smart furniture hookup
+    Given an existing smart furniture hookup position
+    And an authenticated user
+    When the user requests the smart furniture hookup
+    Then the smart furniture hookup details are returned
+
+  Scenario: Place a smart furniture hookup
+    Given an authenticated administrator
+    When the administrator sets the position of a smart furniture hookup
+    Then the smart furniture hookup is placed on the house map
+
+  Scenario: Place a smart furniture hookup within a zone
+    Given an existing zone
+    And an authenticated administrator
+    When the administrator places a smart furniture hookup inside the zone
+    Then the smart furniture hookup is associated with that zone
+
+  Scenario: Place a smart furniture hookup outside all zones
+    Given one or more zones exist
+    And an authenticated administrator
+    When the administrator places a smart furniture hookup outside all zones
+    Then the smart furniture hookup is not associated with any zone
+
+  Scenario: Assign a smart furniture hookup to a zone
+    Given an existing zone
+    And an authenticated administrator
+    When the administrator assigns the smart furniture hookup to the zone
+    Then the smart furniture hookup is associated with that zone
+```
+</details>
+
+## Monitoring Microservice
+![monitoring_service_cc.svg](../img/cc/monitoring_service_cc.svg)
+
+### External communication
+- Accepts and processes HTTP REST requests routed from a physical smart furniture hookup via the API Gateway to ingest a measurement.
+- Establishes a real-time WebSocket connection from the frontend through the API Gateway to enable bidirectional data streaming.
 
 <details>
 <summary>WebSocket namespaces</summary>
 
- **Real-Time Socket**
+**Real-Time Socket**
 - _Client Emits_
-   - `subscribeActiveSmartFurnitureHookups`:Subscribes the client to the room that provides real-time information about
-    currently active smart furniture hookups, including their consumption data.
-   - `subscribeRealTimeUtilityMeters`: Subscribes the client to the room that provides real-time utility meter values, aggregated per utility type.
+    - `subscribeActiveSmartFurnitureHookups`:Subscribes the client to the room that provides real-time information about
+      currently active smart furniture hookups, including their consumption data.
+    - `subscribeRealTimeUtilityMeters`: Subscribes the client to the room that provides real-time utility meter values, aggregated per utility type.
 -  _Server Emits_
-   - `activeSmartFurnitureHookupsUpdate`: Periodically broadcast to all subscribed clients, containing the updated list
-   of active smart furniture hookups and their current consumption values.
-   - `utilityMetersUpdate`: Periodically broadcast to all subscribed clients, containing updated real-time utility meter values for each resource.
+    - `activeSmartFurnitureHookupsUpdate`: Periodically broadcast to all subscribed clients, containing the updated list
+      of active smart furniture hookups and their current consumption values.
+    - `utilityMetersUpdate`: Periodically broadcast to all subscribed clients, containing updated real-time utility meter values for each resource.
 
- **Utility Consumptions Socket**
+**Utility Consumptions Socket**
 - _Client Emits_
-   - `subscribe(queries: UtilityConsumptionsQuery[])`: Subscribes the client to one or more utility consumption queries.
-   - `editQuery(query: UtilityConsumptionsQuery)`: Updates an existing query previously registered by the client.
+    - `subscribe(queries: UtilityConsumptionsQuery[])`: Subscribes the client to one or more utility consumption queries.
+    - `editQuery(query: UtilityConsumptionsQuery)`: Updates an existing query previously registered by the client.
 - _Server Emits_
-   - `utilityConsumptionsUpdate`: Periodically emitted to the client, containing updated time series data for the subscribed utility consumptions queries
-   - `utilityConsumptionsQueryUpdate`: Emitted when a query is added or modified, containing the result of the query.
+    - `utilityConsumptionsUpdate`: Periodically emitted to the client, containing updated time series data for the subscribed utility consumptions queries
+    - `utilityConsumptionsQueryUpdate`: Emitted when a query is added or modified, containing the result of the query.
 
-**Utility Meters Socket**
--  _Client Emits_
-   - `subscribe(queries: UtilityMetersQuery[], interval?: number)`: Subscribes the client to one or more utility meter queries.
-   An optional interval parameter allows specifying a custom update frequency.
-   - `editQuery(query: UtilityMetersQuery`: Modifies an existing utility meter query previously defined by the client.
-   - `deleteQuery(queryLabel: string)`: Removes a previously registered query, stopping further updates for that query.
--  Server Emits
-   - `utilityMetersUpdate`: Periodically emitted to the client, containing updated utility meters for the subscribed queries.
-   - `utilityMetersQueryUpdate`: Emitted whenever a query is added or modified, reflecting the current configuration of the client’s utility meter queries.
 </details>
 
 <details>
-<summary>RESTful API endpoints</summary>
+<summary> Public RESTful API endpoints</summary>
 
-**Internal - Measurements**
-* `POST /api/internal/measurements`: Create a new measurement for a specific smart furniture hookup.
-* `GET /api/internal/measurements/{utilityType}`: Retrieve aggregated consumption data points for GAS, WATER, or ELECTRICITY.
-* `DELETE /api/internal/measurements/household-user-tags/{username}`: Remove a specific user tag from all associated measurement records.
-* `DELETE /api/internal/measurements/zone-tags/{zoneID}`: Remove a specific zone ID tag from all associated measurement records.
-
-
-**Internal - Smart Furniture Hookup**
-* `POST /api/internal/registerSmartFurnitureHookup`: Register a connection between a hookup ID and a network endpoint.
-* `POST /api/internal/disconnectSmartFurnitureHookup`: Terminate a connection for a specific network endpoint.
+**Measurements**
+* `POST /api/measurements`: Create a new measurement for a specific smart furniture hookup.
 
 [RESTful API endpoints doc](/api/monitoring)
 </details>
+
+### Internal API REST communication
+- Responds to requests from the Forecast Service to retrieve aggregated consumption data points.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
+**Internal - Measurements**
+* `GET /api/internal/measurements/{utilityType}`: Retrieve aggregated consumption data points for GAS, WATER, or ELECTRICITY.
+
+[RESTful API endpoints doc](/api/monitoring)
+</details>
+
+### Internal WebSocket communication
+- Establishes a real-time WebSocket connection with the Threshold service to enable bidirectional data streaming of utility meters.
+
+<details>
+<summary>WebSocket namespaces</summary>
+
+**Utility Meters Socket**
+-  _Client Emits_
+    - `subscribe(queries: UtilityMetersQuery[], interval?: number)`: Subscribes the client to one or more utility meter queries.
+      An optional interval parameter allows specifying a custom update frequency.
+    - `editQuery(query: UtilityMetersQuery`: Modifies an existing utility meter query previously defined by the client.
+    - `deleteQuery(queryLabel: string)`: Removes a previously registered query, stopping further updates for that query.
+-  Server Emits
+    - `utilityMetersUpdate`: Periodically emitted to the client, containing updated utility meters for the subscribed queries.
+    - `utilityMetersQueryUpdate`: Emitted whenever a query is added or modified, reflecting the current configuration of the client’s utility meter queries.
+</details>
+
+
+### Event architecture
+- Listens for household user creation and deletion events from the User Service.
+- Listens for hookup creation and deletion events from the Hookup Service.
+- Listens for zone creation and deletion events from the Map Service.
+- Listens for hookup's zone updated events from the Map Service.
+
+<details>
+<summary>Monitoring Inbound Events</summary>
+
+* `HouseholdUserCreated`: received when the admin creates a new household user in the User Service.
+* `HouseholdUserDeleted`: received when the admin deletes a household user in the User Service.
+* `SmartFurnitureHookupCreated`: received when a new smart furniture hookup is created in the Hookup Service.
+* `SmartFurnitureHookupDeleted`: received when a smart furniture hookup is deleted in the Hookup Service.
+* `ZoneCreated`: received when the admin creates a new zone in the Map Service.
+* `ZoneDeleted`: received when the admin deletes a zone in the Map Service.
+* `SmartFurnitureHookupZoneUpdated`: received when the system updates the smart furniture hookup’s assigned zone in the Map Service.
+</details>
+
+### Behavior
+
+<details>
+<summary>Measurement management</summary>
+
+
+```gherkin
+Feature: Measurement management
+
+  Scenario: Create a measurement
+    Given a smart furniture hookup exists
+    When a new utility consumption measurement is received
+    Then the measurement is available for monitoring and analysis
+
+  Scenario: Delete a household user
+    Given an existing household user
+      And measurements are associated with that user
+    When the administrator deletes the household user
+    Then the measurements are no longer associated with that user
+
+  Scenario: Delete a zone
+    Given an existing zone
+      And measurements are associated with that zone
+    When the administrator deletes the zone
+    Then the measurements are no longer associated with that zone
+```
+</details>
+## API Design
+
+
+### Monitoring service
+
+
 
 ### Forecasting service
 
