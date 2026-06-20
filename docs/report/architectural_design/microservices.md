@@ -8,8 +8,9 @@ After defining all use cases, the complete set of features for each context, and
 this section presents the microservices design of the system.
 
 ## Microservices Patterns
-Different protocols will be used to handle all network traffic, utilizing JSON as the standard data payload format.
 ### Communication patterns
+Different protocols will be used to handle all network traffic, utilizing JSON as the standard data payload format.
+
 #### API Gateway
 The API Gateway pattern is used to provide a single entry point for all clients.
 It is responsible for performing path-based routing, prefix stripping, and centralised authentication.
@@ -68,7 +69,7 @@ enabling early detection of failures.
 - Direct-routes from the API Gateway to handle authentication requests
 
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Public RESTful API endpoints</summary>
 
 **Authentication**
 * `POST /api/auth/login`: Authenticate a user with username and password.
@@ -95,7 +96,7 @@ enabling early detection of failures.
 - Responds to requests from the Monitoring Service to look up usernames for existing household users.
 
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Internal RESTful API endpoints</summary>
 
 **Internal - Users**
 * `GET /api/internal/users/{username}`: Internal endpoint to retrieve a user by their username.
@@ -155,6 +156,7 @@ Feature: User account management
 ```
 </details>
 
+## Hookup Microservice
 
 ## API Design
 ### User service
@@ -355,20 +357,19 @@ Feature: User account management
 <img
 src={require('../img/clean_arch.png').default}
 alt="clean_arch"
-width="60%" height="60%"
+width="100%" height="100%"
 />
 
-
-The design of all the above microservices follow the Clean Architecture. This approach separates core business logic from
-technical details, improving maintainability and scalability. The architecture is composed of multiple layers and is based on the Dependency Rule,
-meaning that outer layers depend on innermost ones but the vice versa is not true.
+Internally, each microservice adopts a clean architecture. This approach separates core business logic from technical details, improving maintainability
+and scalability. The architecture is composed of multiple layers and is based on the dependency rule, meaning that outer layers depend on innermost ones but vice versa is
+not true.
 
 The adopted layers are the following:
-* **Domain:** It includes entities, value objects, domain errors, and ports (interfaces).
-* **Application:** Contains application services and use cases that orchestrate business logic.
-* **Interfaces:** Exposes the microservice’s communication mechanisms and provides adapters for communication with other microservices.
-* **Presentation:** Handles data serialization and deserialization through DTOs, mappers, and validation schemas.
-* **Storage:** Manages data persistence, including repositories implementations.
+* **Domain:** It includes aggregate roots, entities, value objects, domain errors, and domain events.
+* **Application:** Contains application services and use cases that orchestrate business logic with inbound/outbound ports (services, repositories, event publishers, etc.).
+* **Presentation:** Exposes the microservice's entrypoint though the inbound adapters like REST controllers or event consumers that call application ports.
+* **Infrastructure:** Manages the outbound adapters such as repositories, event publishers, and external integrations.
+
 
 ![general_package_organization.svg](../img/general_package_organization.svg)
 
