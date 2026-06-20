@@ -7,6 +7,138 @@ sidebar_position: 3
 After defining all use cases, the complete set of features for each context, and how services communicate with one another,
 this section presents the microservices design of the system.
 
+## Microservices Patterns
+
+### Communication patterns
+#### REST and WebSockets
+REST APIs are used for synchronous communication when a microservice needs to retrieve data required to complete a business operation.
+For real-time communication, WebSockets are used to notify other components about events, state changes, or user actions.
+
+In both cases, communication relies on text-based message formats such as JSON.
+
+#### API Gateway
+In this architecture, a reverse proxy is used instead of a classic API Gateway. The reverse proxy acts as a single
+entry point for all client requests, routing them to the appropriate microservices while hiding the internal service structure.
+
+### Deployments Patterns
+#### Service as Containers
+Each microservice is deployed as an independent Docker container. This ensures isolation between services and allows them to be deployed and scaled independently.
+
+#### Database per Service
+Each microservice owns its own database or schema, which is accessible only through its API. This approach improves isolation,
+scalability, and security, while allowing each service to choose a database technology and schema optimized for its specific needs
+
+#### Externalized configuration
+Service configuration is externalized and provided at runtime rather than hard-coded.
+A push-based model is used, where configuration values are supplied via environment variables or configuration files.
+This allows services to adapt easily to different environments, and improves maintainability.
+
+### Security patterns
+#### Access Token
+The Access Token pattern is used to secure communication between services. The system uses token-based authentication with JWT access tokens.
+
+### Observability Patterns
+#### Health-check API
+Each microservice exposes a health-check endpoint that reports its operational status. These endpoints are used for deployment-level health checks,
+enabling early detection of failures.
+
+
+## User Microservice
+![user_service_cc.svg](../img/cc/user_service_cc.svg)
+
+### External communication:
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage user account.
+- Direct-routes from the API Gateway to handle authentication requests
+
+<details>
+<summary>RESTful API endpoints</summary>
+
+**Authentication**
+* `POST /api/auth/login`: Authenticate a user with username and password.
+* `POST /api/auth/logout`: Clear authentication cookies and logout the user.
+* `POST /api/auth/refresh`: Refresh the access token using the refresh token from cookies.
+* `GET /api/auth/verify`: Verify the current user's authentication status.
+
+**Users**
+* `GET /api/users/{id}`: Retrieve a user by their unique identifier.
+* `PATCH /api/users/{id}/password`: Update the password for a specific user (requires ownership or admin role).
+
+**Household Users**
+* `GET /api/household-users`: Retrieve a list of all household users.
+* `POST /api/household-users`: Create a new household user (requires admin role).
+* `PATCH /api/household-users/{id}/username`: Update the username for a specific household user (requires ownership or admin role).
+* `DELETE /api/household-users/{id}`: Delete a specific household user (requires admin role).
+
+**Admin**
+* `POST /api/admin/reset-password`: Reset the admin password using a reset code.
+[RESTful API endpoints doc](/api/user)
+</details>
+
+### API REST communication:
+- Responds to requests from the Monitoring Service to look up usernames for existing household users.
+
+<details>
+<summary>RESTful API endpoints</summary>
+
+**Internal - Users**
+* `GET /api/internal/users/{username}`: Internal endpoint to retrieve a user by their username.
+* `GET /api/internal/users`: Internal endpoint to retrieve all household users.
+
+[RESTful API endpoints doc](/api/user)
+</details>
+
+### Event architecture:
+- Publishes user creation and deletion events using the outbox pattern, which are consumed by the Monitoring Service.
+
+<details>
+<summary>User Events</summary>
+
+**Internal - Users**
+* `UserCreatedEvent`: emitted when the admin creates a new household user
+* `UserDeletedEvent`: emitted when the admin deletes a household user
+
+</details>
+
+### Behavior
+
+<details>
+<summary>User account management</summary>
+
+
+```gherkin
+Feature: User account management
+
+  Scenario: Create a household user
+    Given an authenticated administrator
+    And an available username
+    When the administrator creates a household user
+    Then the household user account exists
+
+  Scenario: Update a household user's credentials
+    Given an authenticated administrator
+    And an existing household user
+    When the administrator changes the user's username or password
+    Then the household user's credentials are updated
+
+  Scenario: Delete a household user
+    Given an authenticated administrator
+    And an existing household user
+    When the administrator deletes the household user
+    Then the household user account no longer exists
+
+  Scenario: Household user updates their own credentials
+    Given an authenticated household user
+    When the user changes their username or password
+    Then the user can authenticate using the updated credentials
+
+  Scenario: Reset an admin password
+    Given a valid password reset code for an admin account
+    When a new password is submitted with the reset code
+    Then the administrator can authenticate using the new password
+```
+</details>
+
+
 ## API Design
 ### User service
 
@@ -223,37 +355,3 @@ The adopted layers are the following:
 
 ![general_package_organization.svg](../img/general_package_organization.svg)
 
-## Microservices Patterns
-
-### Communication patterns
-#### REST and WebSockets
-REST APIs are used for synchronous communication when a microservice needs to retrieve data required to complete a business operation.
-For real-time communication, WebSockets are used to notify other components about events, state changes, or user actions.
-
-In both cases, communication relies on text-based message formats such as JSON.
-
-#### API Gateway
-In this architecture, a reverse proxy is used instead of a classic API Gateway. The reverse proxy acts as a single
-entry point for all client requests, routing them to the appropriate microservices while hiding the internal service structure.
-
-### Deployments Patterns
-#### Service as Containers
-Each microservice is deployed as an independent Docker container. This ensures isolation between services and allows them to be deployed and scaled independently.
-
-#### Database per Service
-Each microservice owns its own database or schema, which is accessible only through its API. This approach improves isolation,
-scalability, and security, while allowing each service to choose a database technology and schema optimized for its specific needs
-
-#### Externalized configuration
-Service configuration is externalized and provided at runtime rather than hard-coded.
-A push-based model is used, where configuration values are supplied via environment variables or configuration files.
-This allows services to adapt easily to different environments, and improves maintainability.
-
-### Security patterns
-#### Access Token
-The Access Token pattern is used to secure communication between services. The system uses token-based authentication with JWT access tokens.
-
-### Observability Patterns
-#### Health-check API
-Each microservice exposes a health-check endpoint that reports its operational status. These endpoints are used for deployment-level health checks,
-enabling early detection of failures.
