@@ -156,7 +156,13 @@ Commands trigger by the physical hookup:
 
 ### Events
 **Inbound events:**
-- _SmartFurnitureHookupCreated:_ received when a new is created in the smart furniture hookup context.
+- _HouseholdUserCreated:_ received when the admin creates a new household user in the user context.
+- _HouseholdUserDeleted:_ received when the admin deletes a household user in the user context.
+- _SmartFurnitureHookupCreated:_ received when a new smart furniture hookup is created in the smart furniture hookup context.
+- _SmartFurnitureHookupDeleted:_ received when a smart furniture hookup is deleted in the smart furniture hookup context.
+- _ZoneCreated:_ received when the admin creates a new zone in the map context.
+- _ZoneDeleted:_ received when the admin deletes a zone in the map context.
+- _SmartFurnitureHookupZoneUpdated:_ received when the system updates the smart furniture hookup’s assigned zone in the map context.
 
 **Outbound events:**
 - _ConsumptionIngested:_ emitted when a received utility consumption  is fully processed
