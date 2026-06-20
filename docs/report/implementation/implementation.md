@@ -173,6 +173,33 @@ export class MongoOutboxEventPublisher implements EventPublisher {
 }
 ```
 
+## Event-Driven Cache
+### How the data are ingested and why we need cache
+A Smart Furniture Hookup device sends telemetry data (hookup ID, username, and payload) to an API Gateway, which forwards it to a Monitoring service.
+The Monitoring service then runs through three validation steps:
+1. confirming the hookup exists,
+2. checking whether the user is known,
+3. resolving any zone the hookup belongs to.
+
+Then, finally it can enrich the data with those results before storing it in InfluxDB.
+
+To make these measurement tags quickly available when new consumption data is ingested, to reduce network traffic,
+and avoiding repeated cross-service lookups, the Monitoring service maintains a cache containing hookup’s ID, household user’s
+username, and the zone ID for each hookup on the map.
+
+#### Behaviour
+The cache is kept up to date through the microservices event-driven architecture by
+listening for create, update, and delete events. If the broker is unavailable, the system
+no longer updates the cache in real time.
+
+When the broker it’s healthy, all lookups go
+through Redis as a cache, with a fallback to the Hookup service to resync if needed.
+
+![redis_lookup.png](../img/sequence_uml/redis_lookup.png)
+
+If the broker it’s unhealthy, each step hits the relevant backend service directly, treating
+timeouts or failures as graceful fallbacks rather than hard stops.
+![direct_lookup.png](../img/sequence_uml/direct_lookup.png)
 
 ## Authentication
 
