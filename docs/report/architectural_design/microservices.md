@@ -8,18 +8,35 @@ After defining all use cases, the complete set of features for each context, and
 this section presents the microservices design of the system.
 
 ## Microservices Patterns
-
+Different protocols will be used to handle all network traffic, utilizing JSON as the standard data payload format.
 ### Communication patterns
-#### REST and WebSockets
-REST APIs are used for synchronous communication when a microservice needs to retrieve data required to complete a business operation.
-For real-time communication, WebSockets are used to notify other components about events, state changes, or user actions.
-
-In both cases, communication relies on text-based message formats such as JSON.
-
 #### API Gateway
-In this architecture, a reverse proxy is used instead of a classic API Gateway. The reverse proxy acts as a single
-entry point for all client requests, routing them to the appropriate microservices while hiding the internal service structure.
+The API Gateway pattern is used to provide a single entry point for all clients.
+It is responsible for performing path-based routing, prefix stripping, and centralised authentication.
+#### Asynchronous messaging
+Instead of relying on synchronous request-response chains, services communicate asynchronously by publishing and consuming meaningful events through an event broker.
+#### HTTP REST API
+REST APIs are used for synchronous communication to communicate with the outside world and for when a microservice needs to retrieve data required to complete a business operation.
+#### WebSockets
+For real-time communication, WebSockets are used to notify other components about events, state changes, or user actions.
+### Event-driven Architecture Patterns
+#### Transactional Outbox pattern 
+The Transactional Outbox pattern is utilized in the system to decouple microservices, ensure high fault tolerance, and
+safely propagate data asynchronously across backend services. When a service updates its state, it saves the new data and
+writes a domain event to a local Outbox collection. Both actions happen inside a
+single transaction, ensuring that they either succeed or fail together. A Change Data Capture (CDC) process reads the Outbox
+and pushes the events to the event broker. This decouples the services, so that the
+sender does not need to wait for the receiver.
 
+#### Inbox pattern
+To ensure exactly-once processing the Inbox Pattern is utilized with an inbox collection for deduplication. Before processing an event, the service saves its ID in the Inbox. A
+unique database index rejects duplicate IDs, guaranteeing that the state is updated exactly once per event.
+
+
+#### Dead Letter Queue Pattern
+Dead-Letter Queue (DLQ) is used to handle messages that cannot be processed successfully after repeated attempts.
+Failures trigger a retry policy before being routed to a Dead-Letter Queue (DLQ). Events that continue to fail after all retry attempts
+are redirected to dedicated DLQ topics for further inspection and handling.
 ### Deployments Patterns
 #### Service as Containers
 Each microservice is deployed as an independent Docker container. This ensures isolation between services and allows them to be deployed and scaled independently.
