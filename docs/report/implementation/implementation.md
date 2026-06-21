@@ -518,29 +518,35 @@ completed.
 
 ## Testing
 
-To maintain system stability and ensure a good quality product, we adopt a testing strategy focused on two main
-categories: **Unit Testing** and **API Testing**.
-We selected the native testing frameworks best suited for each ecosystem:
-
-* **TypeScript Microservices:** **Vitest** as the test runner, combined with **Supertest** to simulate HTTP requests for
-  API testing.
-* **Kotlin Microservices:** **Kotest** using the **Ktor `testApplication`** engine to perform API tests.
+Our testing strategy is organized as a **testing pyramid**: a broad base of fast, isolated
+tests, narrowing towards fewer, broader tests that exercise more of the system. We use the
+native frameworks best suited to each ecosystem — **Vitest** (TypeScript), **Kotest** with the
+**Ktor `testApplication`** engine (Kotlin), **Supertest** for HTTP, and **Playwright** for
+end-to-end testing.
 
 ### Unit Testing
 
-Unit tests focus on non-trivial code across all the layers.
+Unit tests cover non-trivial logic in isolation across every architectural layer (domain,
+application, infrastructure, presentation).
 
-### API Testing
+### Integration Testing
 
-API tests verify the interaction with the microservices from an external perspective.
+Integration tests verify that adapters work against the infrastucture service technology they wrap. For persistence, the TypeScript services run against an in-memory MongoDB
+(`mongodb-memory-server`) started as a **replica set**, because the Outbox / Unit-of-Work
+mechanism depends on MongoDB multi-document transactions. This validates repositories, the
+inbox, and the transactional outbox against a real database.
 
-* **Typescript:** Tests use **Supertest** to send requests to the Express application, validating status codes and JSON
-  payloads without needing a running server port.
-* **Kotlin:** Tests utilize the **Ktor Client** within a test engine context to verify route handling and response
-  serialization.
+### Component Testing
+
+Component tests exercise a single microservice in isolation but fully wired together. The
+entire application is composed in-process and driven through its real HTTP boundary with
+**Supertest**, backed by an in-memory database, while external collaborators (the Kafka broker
+and other services) are stubbed at the network edge. Besides the API behaviour, these tests
+also cover resilience — for example, verifying that the Kafka consumer reconnects automatically
+with exponential backoff after the broker goes down and recovers.
 
 <details>
-<summary>API Test example</summary>
+<summary>Component test example</summary>
 
 ```typescript
 import {beforeAll, describe, expect, it} from "vitest";
@@ -555,10 +561,6 @@ describe("POST /", () => {
 
     expect(res.status).toBe(201);
     expect(res.body.username).toBe(mockHouseholdUserEmma.username);
-  });
-
-  it("should return 400 when no data is provided", async () => {
-    await request(app).post(url).set("Cookie", admin.authHeader).expect(400);
   });
 
   it("should return 403 when non-admin tries to create account", async () => {
@@ -580,6 +582,18 @@ describe("POST /", () => {
 ```
 
 </details>
+
+### End-to-End Testing
+
+At the top of the pyramid, end-to-end tests validate complete user journeys across the whole
+running system. They are written with **Playwright** (Chromium) and run against the fully
+containerized stack through the API Gateway, exactly as a real user would. The suite follows
+the **Page Object Model**, groups specs by feature (authentication, onboarding, thresholds,
+cross-service flows, …), and relies on global setup/teardown plus seeding helpers to bring the
+system into a known state before each run.
+
+In addition to this automated suite, **manual end-to-end testing** was also performed to
+validate the overall user experience and catch issues hard to assert programmatically.
 
 ### Code Quality
 
