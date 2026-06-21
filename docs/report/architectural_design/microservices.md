@@ -60,6 +60,20 @@ The Access Token pattern is used to secure communication between services. The s
 Each microservice exposes a health-check endpoint that reports its operational status. These endpoints are used for deployment-level health checks,
 enabling early detection of failures.
 
+### Log aggregation
+Each microservice generates structured logs describing its internal activity (e.g., requests received, errors, state transitions).
+Logs are forwarded to a centralized logging platform, which enables unified storage, indexing, and search across all services.
+
+### Distributed tracing
+Each incoming external request is assigned a unique correlation identifier that is propagated across all downstream service calls.
+This enables end-to-end tracking of a request as it traverses multiple microservices, making it possible to reconstruct the full execution path and identify latency bottlenecks or failure points.
+Tracing data are collected by a centralized tracing system that visualizes service dependencies and request flows.
+
+### Application metrics
+Each microservice exposes quantitative runtime metrics such as request counts, response latency, error rates, and resource utilization.
+These metrics are collected by a monitoring system at regular intervals and stored.
+Metrics are categorized into differente types of plots.
+
 
 ## User Microservice
 ![user_service_cc.svg](../img/cc/user_service_cc.svg)
@@ -731,4 +745,3 @@ The adopted layers are the following:
 
 
 ![general_package_organization.svg](../img/general_package_organization.svg)
-
