@@ -85,7 +85,7 @@ const config: Config = {
             route: "/api/threshold",
           },
           {
-            spec: "./docs/api/openapi/Alert_openapi.json",
+            spec: "./docs/api/openapi/Notification_openapi.json",
             route: "/api/alert",
           }
         ],
