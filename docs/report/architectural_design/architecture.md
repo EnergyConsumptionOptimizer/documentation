@@ -44,6 +44,8 @@ An external service adapter is used by one or more services to handle this HTTP 
 ### Publish events
 To publish events, microservices will use the outbox pattern. 
 An event publisher adapter, used by one or more services, will handle storing these events in the database.
+These events are then picked up by a relay component and published to the broker topics.
+
 
 ![outbox.svg](../img/cc/outbox.svg)
 
