@@ -100,7 +100,7 @@ For the `forecast-service`, Kotlin was chosen to leverage the **Smile** library 
 combination allows machine learning algorithms to be executed efficiently within the JVM environment, resulting in
 better performance—for this specific use case—compared to typical Python-based solutions.
 
-### Redis
+#### Redis
 
 Redis Distributed Cache is an ultra-fast, in-memory, open-source data store used by applications to store frequently
 accessed data in RAM across multiple servers.
@@ -594,6 +594,40 @@ system into a known state before each run.
 
 In addition to this automated suite, **manual end-to-end testing** was also performed to
 validate the overall user experience and catch issues hard to assert programmatically.
+
+### Architectural Testing
+To enforces Clean Architecture dependency boundaries automatically the typescript projects use dependency-cruiser.
+Layers may only depend inward. An inner layer must never import from an outer one:
+- The Domain layer does not access to any other layer.
+- The Application layer can access only the Domain layer.
+- The Infrastructure/Presentation may depend on domain and application.
+
+
+<details>
+<summary>Dependency Cruiser rules</summary>
+
+```javascript
+
+forbidden: [
+    {
+        name: "domain-pureness",
+        comment: "The domain layer must not depend on any outer layer.",
+        severity: "error",
+        from: { path: "^src/domain" },
+        to: { path: "^src/(application|presentation|infrastructure)" },
+    },
+    {
+        name: "application-pureness",
+        comment:
+            "The application layer must not depend on presentation or infrastructure.",
+        severity: "error",
+        from: { path: "^src/application" },
+        to: { path: "^src/(presentation|infrastructure)" },
+    },
+]
+```
+
+</details>
 
 ### Code Quality
 
