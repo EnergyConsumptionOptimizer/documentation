@@ -542,14 +542,11 @@ Feature: Measurement management
     Then the measurements are no longer associated with that zone
 ```
 </details>
-## API Design
 
 
-### Monitoring service
+## Forecast Microservice
+![forecast_service_cc.svg](../img/cc/forecast_service_cc.svg)
 
-
-
-### Forecasting service
 
 <details>
 <summary>RESTful API endpoints</summary>
@@ -561,7 +558,46 @@ Feature: Measurement management
 [RESTful API endpoints doc](/api/forecast)
 </details>
 
-### Threshold service
+### External communication:
+
+
+<details>
+<summary>Public RESTful API endpoints</summary>
+
+</details>
+
+### API REST communication:
+- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
+</details>
+
+### Event architecture:
+
+<details>
+<summary>Hookup Events</summary>
+* ``: emitted when 
+
+</details>
+
+### Behavior
+
+<details>
+<summary></summary>
+
+
+```gherkin
+
+```
+</details>
+
+
+## Threshold Microservice
+
+![threshold_service_cc.svg](../img/cc/threshold_service_cc.svg)
+
 
 <details>
 <summary>RESTful API endpoints</summary>
@@ -579,7 +615,44 @@ Feature: Measurement management
 [RESTful API endpoints doc](/api/threshold)
 </details>
 
-### Alert service
+### External communication:
+
+
+<details>
+<summary>Public RESTful API endpoints</summary>
+
+</details>
+
+### API REST communication:
+- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
+</details>
+
+### Event architecture:
+
+<details>
+<summary>Hookup Events</summary>
+* ``: emitted when 
+
+</details>
+
+### Behavior
+
+<details>
+<summary></summary>
+
+
+```gherkin
+
+```
+</details>
+
+## Notification Microservice
+
+![notification_service_cc.svg](../img/cc/notification_service_cc.svg)
 
 
 <details>
@@ -601,7 +674,40 @@ Feature: Measurement management
 [RESTful API endpoints doc](/api/alert)
 </details>
 
+### External communication:
 
+
+<details>
+<summary>Public RESTful API endpoints</summary>
+
+</details>
+
+### API REST communication:
+- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+
+<details>
+<summary>Internal RESTful API endpoints</summary>
+
+</details>
+
+### Event architecture:
+
+<details>
+<summary>Hookup Events</summary>
+* ``: emitted when 
+
+</details>
+
+### Behavior
+
+<details>
+<summary></summary>
+
+
+```gherkin
+
+```
+</details>
 
 
 
