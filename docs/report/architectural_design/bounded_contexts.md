@@ -281,10 +281,6 @@ threshold exists within a specific time window (1 hour), the new alert is suppre
 
 * *ThresholdExceeded*: received from the Threshold context.
 
-**Outbound events:**
-
-* *NewAlert*: broadcast to connected clients when a new alert is created and sent.
-
 ## Context Map
 Along with the bounded contexts, the team produced the context map. Each bounded context is isolated and can be implemented independently,
 but they need to be integrated to provide a coherent service to the users. We defined the following model integrity patterns to achieve data consistency:
