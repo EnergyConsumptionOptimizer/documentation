@@ -86,7 +86,7 @@ const config: Config = {
           },
           {
             spec: "./docs/api/openapi/Notification_openapi.json",
-            route: "/api/alert",
+            route: "/api/notification",
           }
         ],
         theme: {
