@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-report/analysis/business_requirements" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.2">
+<title data-rh="true">Business Requirements | E.C.O.</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://energyconsumptionoptimizer.github.io/documentation/report/analysis/business_requirements"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Business Requirements | E.C.O."><meta data-rh="true" name="description" content="1. The admin must be able to configure a house by defining the floor plan, zones, and smart furniture hookups."><meta data-rh="true" property="og:description" content="1. The admin must be able to configure a house by defining the floor plan, zones, and smart furniture hookups."><link data-rh="true" rel="icon" href="/documentation/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://energyconsumptionoptimizer.github.io/documentation/report/analysis/business_requirements"><link data-rh="true" rel="alternate" href="https://energyconsumptionoptimizer.github.io/documentation/report/analysis/business_requirements" hreflang="en"><link data-rh="true" rel="alternate" href="https://energyconsumptionoptimizer.github.io/documentation/report/analysis/business_requirements" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Business Requirements","item":"https://energyconsumptionoptimizer.github.io/documentation/report/analysis/business_requirements"}]}</script><link rel="stylesheet" href="/documentation/assets/css/styles.1bba3514.css">
+<script src="/documentation/assets/js/runtime~main.a02218ed.js" defer="defer"></script>
+<script src="/documentation/assets/js/main.00aa9f41.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"light"),document.documentElement.setAttribute("data-theme-choice",t||"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/documentation/img/logo.png"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/documentation/"><div class="navbar__logo"><img src="/documentation/img/logo.png" alt="E.C.O." class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/documentation/img/logo.png" alt="E.C.O." class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">E.C.O.</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/documentation/report/intro">Report</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/EnergyConsumptionOptimizer/" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/documentation/report/intro"><span title="Report" class="categoryLinkLabel_W154">Report</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/intro"><span title="Introduction" class="linkLabel_WmDU">Introduction</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/glossary"><span title="Glossary" class="linkLabel_WmDU">Glossary</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" tabindex="0" href="/documentation/report/analysis/business_requirements"><span title="Domain Analysis" class="categoryLinkLabel_W154">Domain Analysis</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/documentation/report/analysis/business_requirements"><span title="Business Requirements" class="linkLabel_WmDU">Business Requirements</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/analysis/functional_requirements"><span title="Functional Requirements" class="linkLabel_WmDU">Functional Requirements</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/analysis/non_functional_requirements"><span title="Non-Functional Requirements" class="linkLabel_WmDU">Non-Functional Requirements</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/analysis/event_storming"><span title="Event Storming" class="linkLabel_WmDU">Event Storming</span></a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" tabindex="0" href="/documentation/report/architectural_design/bounded_contexts"><span title="Architectural Design" class="categoryLinkLabel_W154">Architectural Design</span></a></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/implementation/"><span title="Implementation" class="linkLabel_WmDU">Implementation</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/devops/"><span title="DevOps" class="linkLabel_WmDU">DevOps</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/documentation/report/deployment/"><span title="Deployment" class="linkLabel_WmDU">Deployment</span></a></li></ul></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/documentation/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Report</span></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Domain Analysis</span></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Business Requirements</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Business Requirements</h1></header>
+<ol>
+<li class="">The admin must be able to <strong>configure a house</strong> by defining the floor plan, zones, and smart furniture hookups.</li>
+<li class="">The platform must display a <strong>map</strong> with real-time status and utility consumptions of smart furniture hookups.</li>
+<li class="">The platform must provide <strong>real-time data</strong> of current utilities consumption.</li>
+<li class="">The platform must allow access to <strong>historical data</strong> of utilities consumptions.</li>
+<li class="">The platform must notify admin when <strong>forecasted consumption exceeds</strong> thresholds through an automatic alert system.</li>
+<li class="">The platform must notify admin when defined <strong>consumption thresholds are exceeded</strong>, through an automatic alert
+system.</li>
+<li class="">The platform must allow <strong>filtering of utility consumptions</strong> by individual users and zones.</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="use-cases-authentication-operations">Use Cases Authentication Operations<a href="#use-cases-authentication-operations" class="hash-link" aria-label="Direct link to Use Cases Authentication Operations" title="Direct link to Use Cases Authentication Operations" translate="no">​</a></h2>
+<p><img decoding="async" loading="lazy" alt="auth-op.svg" src="/documentation/assets/images/auth-op-26a59635ffc7d6c2782ab16b03dcb452.svg" width="882" height="526" class="img_ev3q"></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="authentication">Authentication<a href="#authentication" class="hash-link" aria-label="Direct link to Authentication" title="Direct link to Authentication" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>User Authentication</strong>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong>  The user supply the credentials to access the system.</li>
+<li class=""><strong>Trigger:</strong> The user accesses the platform without an existing authentication session.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The platform is accessed for the first time.</li>
+<li class="">A user account with credentials exists.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The user is successfully authenticated.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user navigates to the login page.</li>
+<li class="">The user enters his credentials.</li>
+<li class="">The user submits the login form.</li>
+<li class="">The system validates the credentials.</li>
+<li class="">The system authenticates the user and establishes an authenticated session.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class=""><strong>Step c:</strong> If the user enters invalid credentials, the system displays an error message and prompts the user
+to re-enter the information.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><strong>Logout</strong>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong> The user logs out of the platform.</li>
+<li class=""><strong>Trigger:</strong> The user clicks the logout button.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The user is authenticated.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The session is terminated.</li>
+<li class="">The data provided in the setup process are lost.</li>
+<li class="">The user is redirected to the login page.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user clicks the &quot;Logout&quot; button.</li>
+<li class="">The system terminates the session.</li>
+<li class="">The system deletes all the data created by the user.</li>
+<li class="">The system redirects the user to the login page.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="credentials-management">Credentials management<a href="#credentials-management" class="hash-link" aria-label="Direct link to Credentials management" title="Direct link to Credentials management" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Reset Password</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin resets their password using a reset code.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Reset Password” button in the &quot;Log in&quot; page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin knows the reset password code.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The admin&#x27;s password is updated.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Reset Password” page.</li>
+<li class="">The admin is prompted to enter the new password and the reset code.</li>
+<li class="">The system validates the data.</li>
+<li class="">The system updates the admin&#x27;s password.</li>
+</ol>
+</li>
+<li class=""><strong>Exception scenario:</strong>
+<ul>
+<li class="">If the reset code is invalid, the system prompts the user to correct and enter it again.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><strong>Update username</strong>
+<ul>
+<li class="">
+<p><strong>Actor:</strong> Household user</p>
+</li>
+<li class="">
+<p><strong>Description:</strong> The household user changes his own username.</p>
+</li>
+<li class="">
+<p><strong>Trigger:</strong> The household user accesses the “Account” page and clicks the “Update username” button.</p>
+</li>
+<li class="">
+<p><strong>Preconditions:</strong></p>
+<ul>
+<li class="">The user is authenticated.</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Postconditions:</strong></p>
+<ul>
+<li class="">The user username is changed.</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Main Success Scenario:</strong></p>
+<ol>
+<li class="">The user accesses the &quot;Account&quot; page.</li>
+<li class="">The user selects the &quot;Change Username&quot; option.</li>
+<li class="">The system prompts the user to enter the new username.</li>
+<li class="">The user enters the new username.</li>
+<li class="">The user clicks the &quot;Update&quot; button.</li>
+<li class="">The system validates that the new username is unique and valid.</li>
+<li class="">The system updates the username.</li>
+<li class="">The system displays a success message indicating the username has been changed.</li>
+</ol>
+</li>
+<li class="">
+<p><strong>Exception scenarios:</strong></p>
+<ul>
+<li class="">If the entered name already exists, the system displays an error message requesting a different username.
+3<strong>Change password</strong></li>
+</ul>
+</li>
+<li class="">
+<p><strong>Actor:</strong> User</p>
+</li>
+<li class="">
+<p><strong>Description:</strong> The user changes his own password.</p>
+</li>
+<li class="">
+<p><strong>Trigger:</strong> The user accesses the “Account” page.</p>
+</li>
+<li class="">
+<p><strong>Preconditions:</strong></p>
+<ul>
+<li class="">The user is authenticated.</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Postconditions:</strong></p>
+<ul>
+<li class="">The user password is changed.</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Main Success Scenario:</strong></p>
+<ol>
+<li class="">The user accesses the &quot;Account Settings&quot; page.</li>
+<li class="">The user selects the &quot;Change Password&quot; option.</li>
+<li class="">The system prompts the user to enter the current password, the new password.</li>
+<li class="">The user enters the required credentials.</li>
+<li class="">The user clicks the &quot;Update&quot; button.</li>
+<li class="">The system validates that the current password is correct.</li>
+<li class="">The system updates the password.</li>
+<li class="">The system displays a success message indicating the password has been changed.</li>
+</ol>
+<ul>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class=""><strong>Step d:</strong> If the user enters the wrong current password, the system displays an error message and
+prompts the user to re-enter the information.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="use-cases-user-operations">Use Cases User Operations<a href="#use-cases-user-operations" class="hash-link" aria-label="Direct link to Use Cases User Operations" title="Direct link to Use Cases User Operations" translate="no">​</a></h2>
+<p><img decoding="async" loading="lazy" alt="user-op.svg" src="data:image/svg+xml;base64,PD9wbGFudHVtbCAxLjIwMjYuMWJldGE1Pz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjM2OXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MzY0cHg7aGVpZ2h0OjM2OXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDM2NCAzNjkiIHdpZHRoPSIzNjRweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjwhLS1jbHVzdGVyIEVDTy0tPjxnIGNsYXNzPSJjbHVzdGVyIiBkYXRhLXF1YWxpZmllZC1uYW1lPSJFQ08iIGRhdGEtc291cmNlLWxpbmU9IjYiIGlkPSJlbnQwMDAzIj48cmVjdCBmaWxsPSJub25lIiBoZWlnaHQ9IjM1NiIgcng9IjIuNSIgcnk9IjIuNSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIgd2lkdGg9IjI3Ni4xMiIgeD0iODEuOTEiIHk9IjciLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMzEuNzM5MyIgeD0iMjA0LjEwMDQiIHk9IjIxLjk5NTEiPkVDTzwvdGV4dD48L2c+PCEtLWVudGl0eSBVQzEtLT48ZyBjbGFzcz0iZW50aXR5IiBkYXRhLXF1YWxpZmllZC1uYW1lPSJFQ08uVUMxIiBkYXRhLXNvdXJjZS1saW5lPSI3IiBpZD0iZW50MDAwNCI+PGVsbGlwc2UgY3g9IjIxOS45NjkzIiBjeT0iMzIwLjk5OTkiIGZpbGw9IiNGMUYxRjEiIHJ4PSIxMTcuOTk5MyIgcnk9IjI1Ljk5OTkiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjE4NS43ODcxIiB4PSIxMjcuMDc1NyIgeT0iMzIwLjIzODUiPkZpbHRlciBVdGlsaXR5IENvbnN1bXB0aW9uczwvdGV4dD48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIxMjkuMDg5OCIgeD0iMTU1LjQyNDQiIHk9IjMzNi41MzU0Ij4oVXNlci9ab25lL1V0aWxpdHkpPC90ZXh0PjwvZz48IS0tZW50aXR5IFVDMi0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtcXVhbGlmaWVkLW5hbWU9IkVDTy5VQzIiIGRhdGEtc291cmNlLWxpbmU9IjgiIGlkPSJlbnQwMDA1Ij48ZWxsaXBzZSBjeD0iMjE5Ljk2OTQiIGN5PSIyMzMuMDAxOSIgZmlsbD0iI0YxRjFGMSIgcng9IjEyMi4wNTk0IiByeT0iMjYuODExOSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTk3Ljk2ODgiIHg9IjEyMC45ODUiIHk9IjIzMi41NjY2Ij5BbmFseXplIFV0aWxpdHkgQ29uc3VtcHRpb248L3RleHQ+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMTM4LjYxMjMiIHg9IjE1MC42NjMzIiB5PSIyNDguODYzNSI+KFBlcmlvZC9HcmFudWxhcml0eSk8L3RleHQ+PC9nPjwhLS1lbnRpdHkgVUMzLS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1xdWFsaWZpZWQtbmFtZT0iRUNPLlVDMyIgZGF0YS1zb3VyY2UtbGluZT0iOSIgaWQ9ImVudDAwMDYiPjxlbGxpcHNlIGN4PSIyMTkuOTY2NyIgY3k9IjE0OS45OTkzIiBmaWxsPSIjRjFGMUYxIiByeD0iOTMuMTQ2NyIgcnk9IjIxLjAyOTMiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjE2MC44MjkxIiB4PSIxMzkuNTUyMSIgeT0iMTU0LjY0NzgiPlZpZXcgUmVhbC1UaW1lIE1ldGVyczwvdGV4dD48L2c+PCEtLWVudGl0eSBVQzQtLT48ZyBjbGFzcz0iZW50aXR5IiBkYXRhLXF1YWxpZmllZC1uYW1lPSJFQ08uVUM0IiBkYXRhLXNvdXJjZS1saW5lPSIxMCIgaWQ9ImVudDAwMDciPjxlbGxpcHNlIGN4PSIyMTkuOTY1NyIgY3k9IjY4LjAwMTEiIGZpbGw9IiNGMUYxRjEiIHJ4PSIxMTcuNzU1NyIgcnk9IjI1Ljk1MTEiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjIxNC41NTk2IiB4PSIxMTIuNjg1OSIgeT0iNzIuNjQ5NiI+VmlldyBNYXAgd2l0aCBSZWFsLVRpbWUgRGF0YTwvdGV4dD48L2c+PCEtLWVudGl0eSB1LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1xdWFsaWZpZWQtbmFtZT0idSIgZGF0YS1zb3VyY2UtbGluZT0iNCIgaWQ9ImVudDAwMDIiPjxlbGxpcHNlIGN4PSIyMS45NTUxIiBjeT0iMTYyLjM1IiBmaWxsPSIjRjFGMUYxIiByeD0iOCIgcnk9IjgiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjxwYXRoIGQ9Ik0yMS45NTUxLDE3MC4zNSBMMjEuOTU1MSwxOTcuMzUgTTguOTU1MSwxNzguMzUgTDM0Ljk1NTEsMTc4LjM1IE0yMS45NTUxLDE5Ny4zNSBMOC45NTUxLDIxMi4zNSBNMjEuOTU1MSwxOTcuMzUgTDM0Ljk1NTEsMjEyLjM1IiBmaWxsPSJub25lIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIzMS45MTAyIiB4PSI2IiB5PSIyMjYuODQ1MSI+VXNlcjwvdGV4dD48L2c+PCEtLWxpbmsgdSB0byBVQzEtLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iZW50MDAwMiIgZGF0YS1lbnRpdHktMj0iZW50MDAwNCIgZGF0YS1saW5rLXR5cGU9ImRlcGVuZGVuY3kiIGRhdGEtc291cmNlLWxpbmU9IjE0IiBpZD0ibG5rOCI+PHBhdGggZD0iTTM4LjMyLDIzMC4zMSBDNDYuNjUsMjQ2Ljc2IDU4LjQ1LDI2NC45MyA3My45MSwyNzcgQzg5LjU3LDI4OS4yMiAxMDIuOTMxMiwyOTYuMTUyOCAxMjEuOTkxMiwzMDIuNTQyOCIgZmlsbD0ibm9uZSIgaWQ9InUtdG8tVUMxIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxMjcuNjgsMzA0LjQ1LDEyMC40MTgzLDI5Ny43OTY2LDEyMi45MzkzLDMwMi44NjA3LDExNy44NzUzLDMwNS4zODE3LDEyNy42OCwzMDQuNDUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgdSB0byBVQzItLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iZW50MDAwMiIgZGF0YS1lbnRpdHktMj0iZW50MDAwNSIgZGF0YS1saW5rLXR5cGU9ImRlcGVuZGVuY3kiIGRhdGEtc291cmNlLWxpbmU9IjE1IiBpZD0ibG5rOSI+PHBhdGggZD0iTTM4LjM0LDE5NS4yMiBDNTguNDYsMTk5LjQzIDg5LjQ0NywyMDUuOTEyIDEyNC42NDcsMjEzLjI3MiIgZmlsbD0ibm9uZSIgaWQ9InUtdG8tVUMyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxMzAuNTIsMjE0LjUsMTIyLjUyOTIsMjA4Ljc0MjcsMTI1LjYyNTgsMjEzLjQ3NjcsMTIwLjg5MTksMjE2LjU3MzMsMTMwLjUyLDIxNC41IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1saW5rIHUgdG8gVUMzLS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9ImVudDAwMDIiIGRhdGEtZW50aXR5LTI9ImVudDAwMDYiIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIxNiIgaWQ9ImxuazEwIj48cGF0aCBkPSJNMzguMzQsMTg4LjcgQzYyLjQzLDE4My41NCAxMDQuNjUzMiwxNzQuNDk3NCAxNDUuMTUzMiwxNjUuODE3NCIgZmlsbD0ibm9uZSIgaWQ9InUtdG8tVUMzIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSIxNTEuMDIsMTY0LjU2LDE0MS4zODE2LDE2Mi41MzQ5LDE0Ni4xMzEsMTY1LjYwNzgsMTQzLjA1ODEsMTcwLjM1NzIsMTUxLjAyLDE2NC41NiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjwvZz48IS0tbGluayB1IHRvIFVDNC0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSJlbnQwMDAyIiBkYXRhLWVudGl0eS0yPSJlbnQwMDA3IiBkYXRhLWxpbmstdHlwZT0iZGVwZW5kZW5jeSIgZGF0YS1zb3VyY2UtbGluZT0iMTciIGlkPSJsbmsxMSI+PHBhdGggZD0iTTM4LjIzLDE1Ni4yNyBDNDYuNjUsMTQwLjM3IDU4LjU1LDEyMi42NCA3My45MSwxMTEgQzg5LjUsOTkuMTggMTAyLjYxMzEsOTIuNDcyOCAxMjEuNDMzMSw4Ni4yNTI4IiBmaWxsPSJub25lIiBpZD0idS10by1VQzQiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjEyNy4xMyw4NC4zNywxMTcuMzI5NCw4My4zOTYzLDEyMi4zODI2LDg1LjkzOSwxMTkuODM5OCw5MC45OTIyLDEyNy4xMyw4NC4zNyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjwvZz48P3BsYW50dW1sLXNyYyBST3hEUWlEMDM4SmxVV2hYS3RpbWZhZEVYVUItZDQ5Qk1fVEdVWDZFdWVZaVR1ck1JdDFCdHhyc1M0cTJxTWRHWjN3RHV3c1gxTEhmVGVPUktRdkRXZVV1NXotSEtlaVRyTmpnLUNyd25wWlF2MWw3MDVIUktDb2dvOWVYSEttMGl1bFBHX2NTdUdfV0MyYm9KTjdPRk9lcExnbkNkNVlGUFYwbmpUdHVCZHh2Z241S1YwUkZuSEl1RmNBaHlrUVNTa1Y5elR6eTJKREdOYldiUjhlZDlQeVN3R2JjU094djQzeFdBdkZCdHdMYk5GREdCS3hIdk9OZWNaZXlZRXJFUmt4OVFCZk8wVm0yOUNwcHNzRlpWeE1Pck45TWdweTA/PjwvZz48c2NyaXB0IHhtbG5zPSIiLz48L3N2Zz4=" width="364" height="369" class="img_ev3q"></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="monitoring-utility-consumption">Monitoring utility consumption<a href="#monitoring-utility-consumption" class="hash-link" aria-label="Direct link to Monitoring utility consumption" title="Direct link to Monitoring utility consumption" translate="no">​</a></h3>
+<ol>
+<li class="">
+<p><strong>Filter Utility Consumptions</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong> The user filters the visible utility data by specific criteria: Utility, Household User, and/or
+Zone.</li>
+<li class=""><strong>Trigger:</strong> The user clicks the “Filter” button.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The user is authenticated.</li>
+<li class="">Data exists for the requested entities.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The current data visualization updates to reflect only the data matching the selected filters.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user accesses the platform.</li>
+<li class="">The user clicks the “Filter” button.</li>
+<li class="">The system presents options for:<!-- -->
+<ol>
+<li class="">Utility type</li>
+<li class="">Household User username</li>
+<li class="">Zone name</li>
+</ol>
+</li>
+<li class="">The user selects a filter.</li>
+<li class="">The user clicks &quot;Apply Filters&quot;.</li>
+<li class="">The system validates the selection.</li>
+<li class="">The system applies the filter and refreshes the display to show only that consumption data that matches
+the filters.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Analyze Utility Consumption</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong> The user views utility consumption trends by selecting a specific period of time and the granularity of the data.</li>
+<li class=""><strong>Trigger:</strong> The user changes the date range or granularity settings.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The user is authenticated</li>
+<li class="">Some utility consumptions are recorded.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The current data visualization updates to reflect the specific time frame and detail level requested.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user accesses the platform.</li>
+<li class="">The user selects a Period of Time.</li>
+<li class="">The user selects the Data Granularity.</li>
+<li class="">The system select data based on time period and aggregates them based on the selected granularity.</li>
+<li class="">The system applies the settings and refreshes the display to show only that consumption data that matches
+the filters.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>View Real-Time Utility Meters</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong> The user views the real-time utility meters.</li>
+<li class=""><strong>Trigger:</strong> The user navigates to the &quot;Meters&quot; section of the platform.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The user is authenticated.</li>
+<li class="">At least one smart furniture hookup is transmitting his utility consumptions.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The system displays live values for the utility types.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user accesses the &quot;Meters&quot; section of the platform.</li>
+<li class="">The system connects to the live data stream.</li>
+<li class="">The system displays the current live values for Water, Gas, and Electricity.</li>
+<li class="">The system automatically refreshes the values to reflect real-time usage.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>View Map with Real-Time Data</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> User</li>
+<li class=""><strong>Description:</strong> The user views the map.</li>
+<li class=""><strong>Trigger:</strong> The user navigates to the &quot;Map&quot; section of the platform.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The user is authenticated.</li>
+<li class="">At least one smart furniture hookup is transmitting his utility consumptions.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The system displays the map with status and utility consumptions of the smart furniture hookups.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The user accesses the &quot;Map&quot; section of the platform.</li>
+<li class="">The system connects to the live data stream.</li>
+<li class="">The system refreshes the map to show which smart furniture hookups are active and how much are consuming.</li>
+<li class="">The system automatically refreshes the status and consumption values to reflect real-time usage.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="use-cases-admin-operations">Use Cases Admin Operations<a href="#use-cases-admin-operations" class="hash-link" aria-label="Direct link to Use Cases Admin Operations" title="Direct link to Use Cases Admin Operations" translate="no">​</a></h2>
+<p><img decoding="async" loading="lazy" alt="admin-op.svg" src="/documentation/assets/images/admin-op-394e71d8526103452676ade8223653a4.svg" width="448" height="1473" class="img_ev3q"></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="upload-floor-plan">Upload Floor Plan<a href="#upload-floor-plan" class="hash-link" aria-label="Direct link to Upload Floor Plan" title="Direct link to Upload Floor Plan" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Upload Floor Plan</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin uploads a digital floor plan (SVG format) to initiate the setup process.</li>
+<li class=""><strong>Trigger:</strong> The admin accesses the “Upload Floor Plan” page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The SVG file representing the floor plan is already available in the admin’s file system.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The floor plan is successfully stored.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Upload Floor Plan&quot; page.</li>
+<li class="">The admin clicks the “Select file” button.</li>
+<li class="">The system prompts the admin to provide a digital floor plan in SVG format.</li>
+<li class="">The admin selects an SVG file from the local system.</li>
+<li class="">The system uploads and renders a preview of the file.</li>
+<li class="">The admin confirms the upload.</li>
+<li class="">The system saves the floor plan.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class=""><strong>Step d:</strong> If the uploaded file is not in SVG format or is invalid,
+the system displays an error message and prompts the admin to upload a valid file.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="zone-management">Zone management<a href="#zone-management" class="hash-link" aria-label="Direct link to Zone management" title="Direct link to Zone management" translate="no">​</a></h3>
+<ol>
+<li class="">
+<p><strong>Create Zone on Floor Plan</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin creates zones by drawing polygon on the uploaded floor plan, naming each zone and
+customizing its color.</li>
+<li class=""><strong>Trigger:</strong> The admin accesses the “Manage Zones” page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated and in the setup process.</li>
+<li class="">An SVG floor plan has been uploaded to the system.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">A new zone is added to the floor plan with a defined shape, name, and color.</li>
+<li class="">If a smart furniture hookup lies within the created zone it will be automatically assigned to that zone.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Zones&quot; page.</li>
+<li class="">The admin clicks “Add New Zone.”</li>
+<li class="">The admin draws a polygon on the map.</li>
+<li class="">The admin enters a zone name.</li>
+<li class="">The admin clicks the “Create” button.</li>
+<li class="">The system validates the provided information.</li>
+<li class="">The system adds the zone to the floor plan.</li>
+<li class="">The system saves the zone and updates the floor plan.</li>
+</ol>
+</li>
+<li class=""><strong>Alternative Paths:</strong>
+<ul>
+<li class=""><strong>After step 3 – The admin chooses a zone color:</strong>
+<ul>
+<li class="">The admin selects a different color.</li>
+<li class="">Continue from Step 4.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><strong>Exception Scenarios:</strong>
+<ul>
+<li class="">If the drawn zone overlaps with an existing one, the system displays an error and prevents confirmation until
+the overlap is resolved.</li>
+<li class="">The admin discards the zone.</li>
+<li class="">The admin skips this phase entirely.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Edit Existing Zone</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the “Manage Zones” page, modifies a previously created zone by changing its
+name, shape, position, or color.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Edit” button of a zone in the list of zones.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one zone has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected zone is updated with the new properties.</li>
+<li class="">If the zone changes position or shape and a smart furniture hookup lies within the modified zone, it will be
+automatically assigned to that zone.</li>
+<li class="">If the zone changes position or shape and a smart furniture hookup lies within the modified zone, it will be
+automatically unassigned from that zone.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Zones&quot; page.</li>
+<li class="">The admin locates the zone to be edited in the list.</li>
+<li class="">The admin clicks on the &quot;Edit&quot; button/icon associated with the zone in the list of created zones.</li>
+<li class="">The admin edits the name, color, position, and/or shape.</li>
+<li class="">The admin confirms the changes.</li>
+<li class="">The system updates the zone and reflects the changes on the map.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenarios:</strong>
+<ul>
+<li class="">The edited shape overlaps with another zone. The system shows an error and prevents saving until the overlap
+is resolved.</li>
+<li class="">The admin can discard the changes.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Delete Zone</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the “Manage Zones” pae, deletes an existing zone.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Delete” button of a zone in the list of zones.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one zone has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected zone is removed from the system.</li>
+<li class="">The selected zone is removed from the floor plan, and all its associated smart furniture hookups are
+reassigned to the floor plan.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Zones&quot; page.</li>
+<li class="">The admin locates the zone to be deleted in the list of zones.</li>
+<li class="">The admin clicks the “Delete” button/icon associated with the zone.</li>
+<li class="">The admin confirms the deletion.</li>
+<li class="">The system removes the zone.</li>
+<li class="">The system updates the zones list and the map to reflect the deletion.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="smart-furniture-hookups-management">Smart Furniture Hookups Management<a href="#smart-furniture-hookups-management" class="hash-link" aria-label="Direct link to Smart Furniture Hookups Management" title="Direct link to Smart Furniture Hookups Management" translate="no">​</a></h3>
+<ol>
+<li class="">
+<p><strong>Create Smart Furniture Hookups</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin assigns a smart furniture hookup to the floor map by providing its name and endpoint
+within the setup process.</li>
+<li class=""><strong>Trigger:</strong> The admin accesses the “Manage Smart Furniture Hookups” page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">The admin knows the endpoint of the smart furniture hookup.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">A new smart furniture hookup is created.</li>
+<li class="">If the smart furniture hookup is within a zone, it will be automatically assigned to it.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Smart Furniture Hookups&quot; page.</li>
+<li class="">The admin clicks the &quot;Create New Smart Furniture Hookup&quot; button.</li>
+<li class="">The system opens a creation form.</li>
+<li class="">The admin is prompted to enter the smart furniture hookup’s name and endpoint.</li>
+<li class="">The admin adjusts the smart furniture hookup’s position.</li>
+<li class="">The admin clicks the &quot;Done&quot; button.</li>
+<li class="">The system validates the data.</li>
+<li class="">The system saves the smart furniture hookup information and updates the map.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class="">If the entered endpoint is not reachable or is invalid, the system displays a warning message indicating that
+the endpoint is unreachable.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Edit Smart Furniture Hookup</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the &quot;Manage Smart Furniture Hookups&quot; page, modifies a previously created
+hookup by changing its name or endpoint.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Edit” button of a hookup in the list of hookups.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one hookup has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected hookup is updated with the new properties.</li>
+<li class="">If the smart furniture hookup&#x27;s new position is within a zone, it will be automatically assigned to it.</li>
+<li class="">If the smart furniture hookup&#x27;s new position is no longer within a zone, it will be automatically unassigned
+to it.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Smart Furniture Hookups&quot; page.</li>
+<li class="">The admin locates the hookup to be edited in the list.</li>
+<li class="">The admin clicks the &quot;Edit&quot; button/icon associated with the hookup.</li>
+<li class="">The admin edits the name, position and/or endpoint.</li>
+<li class="">The admin confirms the changes.</li>
+<li class="">The system updates the hookup and reflects the changes on the map.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class="">If the entered endpoint is not reachable or is invalid, the system displays a warning message indicating that
+the endpoint is unreachable.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Delete Existing Utility Hookups</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the “Manage Smart Furniture Hookups” page, deletes an existing hookup.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Delete” button of a hookup in the list of hookups.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one hookup has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected hookup is removed from the system.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Smart Furniture Hookups&quot; page.</li>
+<li class="">The admin locates the hookup to be deleted in the list of hookups.</li>
+<li class="">The admin clicks the &quot;Delete&quot; button/icon associated with the hookup.</li>
+<li class="">The system displays a confirmation prompt.</li>
+<li class="">The admin confirms the deletion.</li>
+<li class="">The system removes the hookup from the floor plan.</li>
+<li class="">The system updates the hookups list and the map to reflect the deletion.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="thresholds-management">Thresholds management<a href="#thresholds-management" class="hash-link" aria-label="Direct link to Thresholds management" title="Direct link to Thresholds management" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Create Thresholds</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin configures alert thresholds by creating a new threshold for a resource and entering the
+name, the type, the period, and a numeric limit.</li>
+<li class=""><strong>Trigger:</strong> The authenticated admin access “Manage Thresholds” page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">A new threshold is created.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Thresholds&quot; page.</li>
+<li class="">The admin clicks the &quot;Create New Threshold&quot; button.</li>
+<li class="">The system opens a threshold creation form.</li>
+<li class="">The admin is prompted to enter the threshold name.</li>
+<li class="">The admin is prompted to choose the threshold type between Actual, Historical, Forcast.</li>
+<li class="">The admin enters a numeric threshold.</li>
+<li class="">The admin clicks the &quot;Done&quot; button.</li>
+<li class="">The system validates the data.</li>
+<li class="">The system saves the thresholds.</li>
+</ol>
+</li>
+<li class=""><strong>Alternative Path:</strong>
+<ul>
+<li class="">If the admin choose the Historical or Forecast threshold is prompted to choose the threshold period.</li>
+</ul>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class="">The data provided is invalid. The system displays an error message and prevents saving.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><strong>Edit Threshold</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the &quot;Manage Thresholds&quot; page, modifies a previously created threshold by
+changing the name, the type, the period, and/or the numeric limit.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Edit” button of a threshold in the list of thresholds.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one threshold has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected threshold is updated with the new properties.</li>
+<li class="">Future alerts will be triggered based on the updated values.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Thresholds&quot; page.</li>
+<li class="">The admin locates the threshold to be edited in the list.</li>
+<li class="">The admin clicks the &quot;Edit&quot; button/icon associated with the threshold.</li>
+<li class="">The system opens the threshold editing form pre-filled with current data.</li>
+<li class="">The admin modifies the name, type, and/or numeric limit.</li>
+<li class="">The admin clicks the &quot;Save Changes&quot; button.</li>
+<li class="">The system validates the data.</li>
+<li class="">The system updates the threshold and returns the admin to the list view.</li>
+</ol>
+</li>
+<li class=""><strong>Exception Scenario:</strong>
+<ul>
+<li class="">The data provided is invalid. The system displays an error message and prevents saving.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><strong>Disable Threshold</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin temporarily deactivates a specific threshold without removing it from the system,
+preventing it from triggering alerts.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Disable” (or status toggle) button of an active threshold.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">The target threshold is currently active.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The threshold status is set to &quot;Inactive&quot;.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Thresholds&quot; page.</li>
+<li class="">The admin locates the active threshold in the list.</li>
+<li class="">The admin clicks the &quot;Disable&quot; button or toggles the status switch.</li>
+<li class="">The system updates the status of the threshold to inactive.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li class=""><strong>Delete Threshold</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the “Manage Thresholds” page, permanently removes an existing threshold
+configuration.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Delete” button of a threshold in the list.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one threshold exists.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected threshold is removed from the system.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Thresholds&quot; page.</li>
+<li class="">The admin locates the threshold to be deleted in the list.</li>
+<li class="">The admin clicks the &quot;Delete&quot; button/icon associated with the threshold.</li>
+<li class="">The system displays a confirmation prompt to prevent accidental deletion.</li>
+<li class="">The admin confirms the deletion.</li>
+<li class="">The system deletes the threshold record from the database.</li>
+<li class="">The system refreshes the list to reflect the deletion.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="household-users-management">Household Users management<a href="#household-users-management" class="hash-link" aria-label="Direct link to Household Users management" title="Direct link to Household Users management" translate="no">​</a></h3>
+<ol>
+<li class="">
+<p><strong>Add New Household Users</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the “Manage Household Users” page, creates a household user account by
+providing a username and password.</li>
+<li class=""><strong>Trigger:</strong> The admin accesses the &quot;Manage Household Users&quot; page.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated and in the setup process.</li>
+<li class="">The admin knows the household user&#x27;s username.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">A new user account is created.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Household Users&quot; page.</li>
+<li class="">The admin clicks “Add New User.”</li>
+<li class="">The system opens a household user creation form.</li>
+<li class="">The admin is prompted to enter the username and password.</li>
+<li class="">The system validates the data.</li>
+<li class="">The system creates a new user.</li>
+</ol>
+</li>
+<li class=""><strong>Exception scenarios:</strong>
+<ul>
+<li class="">If the entered name already exists, the system displays an error message requesting a different username.</li>
+<li class="">If required fields are missing or invalid, the system prompts the admin to correct the details before
+proceeding.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Edit User</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the &quot;Manage Users” page, modifies a previously created user by changing its
+name or password.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Edit” button of a user in the list of users.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated and in the setup process.</li>
+<li class="">At least one user has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected user is updated with the new properties.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Users&quot; page.</li>
+<li class="">The admin locates the user to be edited in the list.</li>
+<li class="">The admin clicks on the &quot;Edit&quot; button/icon associated with that user.</li>
+<li class="">The system opens an edit form pre-populated with the user’s current details.</li>
+<li class="">The admin updates the user’s name and/or password.</li>
+<li class="">The admin submits the changes by clicking the “Done&quot; button.</li>
+<li class="">The system validates the updated information.</li>
+<li class="">The system updates the user’s details and updates the user list to reflect the edit.</li>
+</ol>
+</li>
+<li class=""><strong>Exception scenarios:</strong>
+<ul>
+<li class="">If the entered name already exists, the system displays an error message requesting a different username.</li>
+<li class="">If required fields are missing or invalid, the system prompts the admin to correct the details before
+proceeding.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="">
+<p><strong>Delete User</strong></p>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin, while in the &quot;Manage Users” page, deletes an existing user.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Delete” button of a user in the list of users.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated and in the setup process.</li>
+<li class="">At least one user has already been created.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected user account is removed from the system.</li>
+<li class="">The user no longer appears in the list.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Users&quot; page during setup.</li>
+<li class="">The admin locates the user to be deleted in the list.</li>
+<li class="">The admin clicks on the &quot;Delete&quot; button/icon associated with that user.</li>
+<li class="">The system prompts the admin for confirmation.</li>
+<li class="">The admin confirms the deletion.</li>
+<li class="">The system validates the confirmation and deletes the user account.</li>
+<li class="">The system updates the user list to reflect the removal.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="alerts-management">Alerts management<a href="#alerts-management" class="hash-link" aria-label="Direct link to Alerts management" title="Direct link to Alerts management" translate="no">​</a></h3>
+<ol>
+<li class=""><strong>Mark as read</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin changes the status of a specific system-generated alert from &quot;Unread&quot; to &quot;Read&quot;.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Mark as Read” button/icon next to an alert or opens the alert details.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">There is at least one unread alert in the system.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The alert status is updated to &quot;Read&quot;.</li>
+<li class="">The global counter of unread notifications is decremented.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Alerts&quot; page.</li>
+<li class="">The system displays a list of alerts.</li>
+<li class="">The admin locates an unread alert.</li>
+<li class="">The admin clicks the &quot;Mark as Read&quot; button.</li>
+<li class="">The system updates the alert&#x27;s status to &quot;Read&quot;.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li class=""><strong>Delete Alert</strong>
+<ul>
+<li class=""><strong>Actor:</strong> Admin</li>
+<li class=""><strong>Description:</strong> The admin changes removes an alert.</li>
+<li class=""><strong>Trigger:</strong> The admin clicks the “Delete” button associated with a specific alert.</li>
+<li class=""><strong>Preconditions:</strong>
+<ul>
+<li class="">The admin is authenticated.</li>
+<li class="">At least one alert exists in the system.</li>
+</ul>
+</li>
+<li class=""><strong>Postconditions:</strong>
+<ul>
+<li class="">The selected alert is permanently removed from the system.</li>
+</ul>
+</li>
+<li class=""><strong>Main Success Scenario:</strong>
+<ol>
+<li class="">The admin accesses the &quot;Manage Alerts&quot; page.</li>
+<li class="">The admin locates the alert to be deleted.</li>
+<li class="">The admin clicks the &quot;Delete&quot; button/icon associated with the alert.</li>
+<li class="">The system removes the alert from the database.</li>
+<li class="">The system refreshes the list to reflect the removal.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/documentation/report/glossary"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Glossary</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/documentation/report/analysis/functional_requirements"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Functional Requirements</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#use-cases-authentication-operations" class="table-of-contents__link toc-highlight">Use Cases Authentication Operations</a><ul><li><a href="#authentication" class="table-of-contents__link toc-highlight">Authentication</a></li><li><a href="#credentials-management" class="table-of-contents__link toc-highlight">Credentials management</a></li></ul></li><li><a href="#use-cases-user-operations" class="table-of-contents__link toc-highlight">Use Cases User Operations</a><ul><li><a href="#monitoring-utility-consumption" class="table-of-contents__link toc-highlight">Monitoring utility consumption</a></li></ul></li><li><a href="#use-cases-admin-operations" class="table-of-contents__link toc-highlight">Use Cases Admin Operations</a><ul><li><a href="#upload-floor-plan" class="table-of-contents__link toc-highlight">Upload Floor Plan</a></li><li><a href="#zone-management" class="table-of-contents__link toc-highlight">Zone management</a></li><li><a href="#smart-furniture-hookups-management" class="table-of-contents__link toc-highlight">Smart Furniture Hookups Management</a></li><li><a href="#thresholds-management" class="table-of-contents__link toc-highlight">Thresholds management</a></li><li><a href="#household-users-management" class="table-of-contents__link toc-highlight">Household Users management</a></li><li><a href="#alerts-management" class="table-of-contents__link toc-highlight">Alerts management</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/documentation/report/intro">SAP Report</a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Energy Consumption Optimizer, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

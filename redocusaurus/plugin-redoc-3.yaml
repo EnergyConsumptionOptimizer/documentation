@@ -1,0 +1,309 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Monitoring Service API
+  description: >-
+    API documentation for Monitoring Service - handles measurements, smart
+    furniture hookups, and utility consumption monitoring
+servers:
+  - url: /
+security:
+  - cookieAuth: []
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: authToken
+  schemas: {}
+  parameters: {}
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      security: []
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/internal/registerSmartFurnitureHookup:
+    post:
+      tags:
+        - Internal - Smart Furniture Hookup
+      summary: Register a smart furniture hookup connection
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                smartFurnitureHookupID:
+                  type: string
+                  minLength: 1
+                endpoint:
+                  type: string
+                  minLength: 1
+              required:
+                - smartFurnitureHookupID
+                - endpoint
+      responses:
+        '200':
+          description: Smart furniture hookup registered successfully
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+  /api/internal/disconnectSmartFurnitureHookup:
+    post:
+      tags:
+        - Internal - Smart Furniture Hookup
+      summary: Disconnect a smart furniture hookup
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                  minLength: 1
+              required:
+                - endpoint
+      responses:
+        '200':
+          description: Smart furniture hookup disconnected successfully
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+  /api/internal/measurements:
+    post:
+      tags:
+        - Internal - Measurements
+      summary: Create a new measurement
+      security: []
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+          required: true
+          name: smart_furniture_hookup_id
+          in: query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                realTimeConsumption:
+                  type: number
+                  minimum: 0
+                timestamp:
+                  type: string
+                username:
+                  type: string
+                  nullable: true
+                  minLength: 1
+              required:
+                - realTimeConsumption
+                - timestamp
+      responses:
+        '204':
+          description: Measurement created successfully
+        '400':
+          description: Invalid request body or query parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+  /api/internal/measurements/household-user-tags/{username}:
+    delete:
+      tags:
+        - Internal - Measurements
+      summary: Remove household user tag from measurements
+      security: []
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+          required: true
+          name: username
+          in: path
+      responses:
+        '204':
+          description: Household user tag removed successfully
+        '400':
+          description: Invalid username parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+  /api/internal/measurements/zone-tags/{zoneID}:
+    delete:
+      tags:
+        - Internal - Measurements
+      summary: Remove zone ID tag from measurements
+      security: []
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+          required: true
+          name: zoneID
+          in: path
+      responses:
+        '204':
+          description: Zone ID tag removed successfully
+        '400':
+          description: Invalid zoneID parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+  /api/internal/measurements/{utilityType}:
+    get:
+      tags:
+        - Internal - Measurements
+      summary: Get utility consumptions by utility type
+      security: []
+      description: >-
+        Retrieve consumption data points for a specific utility type, optionally
+        filtered by time range, granularity, and household user
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - GAS
+              - WATER
+              - ELECTRICITY
+              - gas
+              - water
+              - electricity
+            description: 'Utility type (case-insensitive: GAS, WATER, or ELECTRICITY)'
+          required: true
+          description: 'Utility type (case-insensitive: GAS, WATER, or ELECTRICITY)'
+          name: utilityType
+          in: path
+        - schema:
+            type: string
+            description: Start time for filtering (ISO 8601 format or time string)
+          required: false
+          description: Start time for filtering (ISO 8601 format or time string)
+          name: from
+          in: query
+        - schema:
+            type: string
+            description: End time for filtering (ISO 8601 format or time string)
+          required: false
+          description: End time for filtering (ISO 8601 format or time string)
+          name: to
+          in: query
+        - schema:
+            type: string
+            description: Time granularity for aggregating data points
+          required: false
+          description: Time granularity for aggregating data points
+          name: granularity
+          in: query
+        - schema:
+            type: string
+            minLength: 1
+            description: Filter by specific household user
+          required: false
+          description: Filter by specific household user
+          name: username
+          in: query
+      responses:
+        '200':
+          description: Utility consumptions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  utilityConsumptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: number
+                        timestamp:
+                          type: string
+                      required:
+                        - value
+                        - timestamp
+                required:
+                  - utilityConsumptions
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
+        '404':
+          description: Utility type not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: string
+                required:
+                  - message
