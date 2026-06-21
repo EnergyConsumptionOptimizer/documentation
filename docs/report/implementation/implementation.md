@@ -521,7 +521,7 @@ completed.
 Our testing strategy is organized as a **testing pyramid**: a broad base of fast, isolated
 tests, narrowing towards fewer, broader tests that exercise more of the system. We use the
 native frameworks best suited to each ecosystem — **Vitest** (TypeScript), **Kotest** with the
-**Ktor `testApplication`** engine (Kotlin), **Supertest** for HTTP, and **Playwright** for
+**Ktor `testApplication`**, **Supertest** for HTTP, and **Playwright** for
 end-to-end testing.
 
 ### Unit Testing
@@ -586,7 +586,7 @@ describe("POST /", () => {
 ### End-to-End Testing
 
 At the top of the pyramid, end-to-end tests validate complete user journeys across the whole
-running system. They are written with **Playwright** (Chromium) and run against the fully
+running system. They are written with **Playwright** and run against the fully
 containerized stack through the API Gateway, exactly as a real user would. The suite follows
 the **Page Object Model**, groups specs by feature (authentication, onboarding, thresholds,
 cross-service flows, …), and relies on global setup/teardown plus seeding helpers to bring the
