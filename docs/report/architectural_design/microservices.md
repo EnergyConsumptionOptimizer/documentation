@@ -561,50 +561,78 @@ Feature: Measurement management
 ## Forecast Microservice
 ![forecast_service_cc.svg](../img/cc/forecast_service_cc.svg)
 
+### External communication
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to retrieve energy consumption forecasts.
 
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Public RESTful API endpoints</summary>
 
 **Forecasts**
-* `GET /api/forecasts`: Retrieve all available energy consumption forecasts (optionally filterable by `utilityType` via query string).
+* `GET /api/forecasts`: Retrieve all available energy consumption forecasts.
 * `GET /api/forecasts/{utilityType}`: Retrieve a specific forecast for a single utility type (ELECTRICITY, GAS, or WATER).
 
 [RESTful API endpoints doc](/api/forecast)
 </details>
 
-### External communication:
+### Internal API REST communication
+- Sends requests to the Monitoring Service at `GET /api/internal/measurements/{utilityType}` to retrieve aggregated historical consumption data needed for forecast computation.
 
-
-<details>
-<summary>Public RESTful API endpoints</summary>
-
-</details>
-
-### API REST communication:
-- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+### Event architecture
+- Publishes forecast computed events using the outbox pattern, which are consumed by the Threshold Service.
 
 <details>
-<summary>Internal RESTful API endpoints</summary>
+<summary>Forecast Events</summary>
 
-</details>
-
-### Event architecture:
-
-<details>
-<summary>Hookup Events</summary>
-* ``: emitted when 
+* `ForecastComputedEvent`: emitted when the system computes or recomputes an energy consumption forecast for a utility type.
 
 </details>
 
 ### Behavior
 
 <details>
-<summary></summary>
-
+<summary>Forecast computation</summary>
 
 ```gherkin
+Feature: Forecast computation
 
+  Scenario: Compute a forecast for a single utility type
+    Given historical consumption data is available from the Monitoring Service
+    When the system computes a forecast for a utility type
+    Then a forecasted data series is generated using a Random Forest regression model
+    And the forecast is persisted
+
+  Scenario: Compute forecasts for all utility types
+    Given historical consumption data is available for all utility types
+    When the system computes forecasts for all utility types
+    Then a forecast is generated for ELECTRICITY, GAS, and WATER
+
+  Scenario: Daily scheduled forecast computation
+    Given the forecast scheduler is active
+    When the scheduled time is reached
+    Then forecasts are automatically recomputed for all utility types
 ```
+
+</details>
+
+<details>
+<summary>Forecast retrieval</summary>
+
+```gherkin
+Feature: Forecast retrieval
+
+  Scenario: View all forecasts
+    Given one or more forecasts exist
+    And an authenticated user
+    When the user requests all forecasts
+    Then all forecasts are returned with their data points
+
+  Scenario: View a forecast by utility type
+    Given a forecast exists for a utility type
+    And an authenticated user
+    When the user requests the forecast for that utility type
+    Then the forecast with its data points is returned
+```
+
 </details>
 
 
@@ -612,118 +640,266 @@ Feature: Measurement management
 
 ![threshold_service_cc.svg](../img/cc/threshold_service_cc.svg)
 
-
-<details>
-<summary>RESTful API endpoints</summary>
-
-* **Threshold Management**
-* `GET /api/thresholds`: List all thresholds with optional filters for name, utility type, state, and period.
-* `POST /api/thresholds`: Create a new consumption threshold for Electricity, Gas, or Water.
-* `GET /api/thresholds/{id}`: Retrieve detailed configuration for a specific threshold by its UUID.
-* `PUT /api/thresholds/{id}`: Update the properties (name, value, state, etc.) of an existing threshold.
-* `DELETE /api/thresholds/{id}`: Permanently remove a threshold.
-
-* **Internal**
-* `POST /api/internal/thresholds/evaluations/forecast`: Trigger a batch evaluation of forecasted aggregations against existing thresholds to detect potential future breaches.
-
-[RESTful API endpoints doc](/api/threshold)
-</details>
-
-### External communication:
-
+### External communication
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage consumption thresholds.
 
 <details>
 <summary>Public RESTful API endpoints</summary>
 
+**Threshold Management**
+* `GET /api/thresholds`: List all thresholds with optional filters for name, utility type, threshold type, period, and state.
+* `POST /api/thresholds`: Create a new consumption threshold (requires admin role).
+* `GET /api/thresholds/{id}`: Retrieve detailed configuration for a specific threshold by its UUID.
+* `PUT /api/thresholds/{id}`: Update the properties (name, value, threshold type, period, utility type, state) of an existing threshold (requires admin role).
+* `DELETE /api/thresholds/{id}`: Permanently remove a threshold (requires admin role).
+
+[RESTful API endpoints doc](/api/threshold)
 </details>
 
-### API REST communication:
-- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+### Internal API REST communication
+- Responds to requests from the Monitoring Service to evaluate real-time meter readings against active thresholds.
 
 <details>
 <summary>Internal RESTful API endpoints</summary>
 
+**Internal - Evaluations**
+* `POST /api/internal/thresholds/evaluations/realtime`: Evaluate real-time utility meter readings against active ACTUAL thresholds.
+* `POST /api/internal/thresholds/reset`: Manually reset all eligible breached thresholds to their enabled state (requires admin role).
+
+[RESTful API endpoints doc](/api/threshold)
 </details>
 
-### Event architecture:
+### Internal WebSocket communication
+- Connects as a WebSocket client to the Monitoring Service to receive real-time utility meter updates for threshold evaluation.
 
 <details>
-<summary>Hookup Events</summary>
-* ``: emitted when 
+<summary>WebSocket namespaces</summary>
+
+**Utility Meters Socket (client)**
+- _Client Emits_
+    - `subscribe(queries: UtilityMetersQuery[])`: Subscribes to utility meter queries labeled `realtime`, `day`, `week`, and `month`.
+- _Client Listens_
+    - `utilityMetersUpdate`: Receives periodic updates containing utility meters for each subscribed query, triggering real-time threshold evaluation.
+</details>
+
+### Event architecture
+- Listens for forecast computed events from the Forecast Service via Kafka using the Inbox pattern for deduplication.
+- Publishes threshold breached events using the outbox pattern, which are consumed by the Notification Service.
+
+<details>
+<summary>Threshold Inbound Events</summary>
+
+* `ForecastComputed`: received when a new energy consumption forecast is computed in the Forecast Service.
+
+</details>
+
+<details>
+<summary>Threshold Outbound Events</summary>
+
+* `ThresholdBreachedEvent`: emitted when a detected consumption value exceeds a threshold's limit value.
 
 </details>
 
 ### Behavior
 
 <details>
-<summary></summary>
-
+<summary>Threshold management</summary>
 
 ```gherkin
+Feature: Threshold management
 
+  Scenario: Create a threshold
+    Given an authenticated administrator
+    When the administrator creates a threshold with a name, utility type, threshold type, and limit value
+    Then the threshold exists and is enabled
+
+  Scenario: View all thresholds
+    Given one or more thresholds exist
+    And an authenticated user
+    When the user requests the list of thresholds
+    Then all thresholds are returned
+
+  Scenario: View a threshold
+    Given an existing threshold
+    And an authenticated user
+    When the user requests the threshold
+    Then the threshold details are returned
+
+  Scenario: Update a threshold
+    Given an existing threshold
+    And an authenticated administrator
+    When the administrator updates the threshold
+    Then the threshold reflects the updated details
+
+  Scenario: Delete a threshold
+    Given an existing threshold
+    And an authenticated administrator
+    When the administrator deletes the threshold
+    Then the threshold no longer exists
 ```
+
+</details>
+
+<details>
+<summary>Threshold evaluation</summary>
+
+```gherkin
+Feature: Threshold evaluation
+
+  Scenario: Detect a real-time threshold breach
+    Given an enabled ACTUAL threshold exists for a utility type
+    When a real-time meter reading exceeds the threshold limit value
+    Then the threshold state becomes BREACHED
+    And a ThresholdBreachedEvent is published
+
+  Scenario: Detect a forecast threshold breach
+    Given an enabled FORECAST threshold exists for a utility type
+    When a forecast data point aggregation exceeds the threshold limit value
+    Then the threshold state becomes BREACHED
+    And a ThresholdBreachedEvent is published
+
+  Scenario: No breach when value is within limit
+    Given an enabled threshold exists for a utility type
+    When a meter reading does not exceed the threshold limit value
+    Then the threshold remains in its current state
+```
+
+</details>
+
+<details>
+<summary>Scheduled threshold reset</summary>
+
+```gherkin
+Feature: Scheduled threshold reset
+
+  Scenario: Reset daily thresholds
+    Given a threshold breached today with a ONE_DAY period
+    When the scheduled reset runs at the start of the next day
+    Then the threshold is reset to ENABLED
+
+  Scenario: Reset weekly thresholds
+    Given a threshold breached this week with a ONE_WEEK period
+    When the scheduled reset runs on Monday
+    Then the threshold is reset to ENABLED
+
+  Scenario: Reset monthly thresholds
+    Given a threshold breached this month with a ONE_MONTH period
+    When the scheduled reset runs on the first day of the next month
+    Then the threshold is reset to ENABLED
+```
+
 </details>
 
 ## Notification Microservice
 
 ![notification_service_cc.svg](../img/cc/notification_service_cc.svg)
 
+### External communication
+- Accepts and processes HTTP REST requests routed from the frontend via the API Gateway to manage notifications.
+- Establishes a real-time Server-Sent Events (SSE) connection from the frontend through the API Gateway to stream notifications.
 
 <details>
-<summary>RESTful API endpoints</summary>
+<summary>Server-Sent Events</summary>
 
-**Alerts**
-* `GET /api/alerts`: Retrieve all alerts for the currently authenticated user.
-* `GET /api/alerts/{id}`: Get the full details of a specific alert by ID.
-* `PATCH /api/alerts/{id}`: Update the "read" state of a specific alert.
-* `DELETE /api/alerts/{id}`: Delete a specific alert.
-* `DELETE /api/alerts`: Clear all alerts from the system.
-* `GET /api/alerts/unread-count`: Get the total count of unread notifications.
-* `GET /api/alerts/stream`: Establish a **Server-Sent Events (SSE)** connection for real-time alert streaming.
-
-
-**Internal**
-* `POST /api/internal/alerts`: Request the creation of a new alert (includes spam mitigation logic to prevent duplicate notifications).
-
-[RESTful API endpoints doc](/api/alert)
+**Notification Stream**
+- _Server Emits_
+    - `CONNECTED`: Sent when a client opens the SSE connection, confirming the subscription is active.
+    - `NEW_NOTIFICATION`: Sent when a new notification is created, containing the notification payload (id, sourceId, message, state, createdAt).
+- _Keep-alive_
+    - A heartbeat comment is sent every 30 seconds to prevent the connection from timing out.
 </details>
-
-### External communication:
-
 
 <details>
 <summary>Public RESTful API endpoints</summary>
 
+**Notifications**
+* `GET /api/notifications`: Retrieve all notifications sorted by newest first.
+* `GET /api/notifications/{id}`: Get the full details of a specific notification by ID.
+* `PATCH /api/notifications/{id}/read`: Mark a specific notification as read.
+* `DELETE /api/notifications/{id}`: Delete a specific notification (requires admin role).
+* `DELETE /api/notifications`: Clear all notifications from the system (requires admin role).
+* `GET /api/notifications/unread-count`: Get the total count of unread notifications.
+* `GET /api/notifications/stream`: Establish a Server-Sent Events (SSE) connection for real-time notification streaming.
+
+[RESTful API endpoints doc](/api/notification)
 </details>
 
-### API REST communication:
-- Responds to requests from the Monitoring Service to look up IDs for existing hookups.
+### Event architecture
+- Listens for threshold breached events from the Threshold Service via Kafka using the Inbox pattern for deduplication.
+- Routes unprocessable events to a Dead Letter Queue (DLQ) for further inspection.
 
 <details>
-<summary>Internal RESTful API endpoints</summary>
+<summary>Notification Inbound Events</summary>
 
-</details>
-
-### Event architecture:
-
-<details>
-<summary>Hookup Events</summary>
-* ``: emitted when 
+* `ThresholdBreachedEvent`: received when a threshold is breached in the Threshold Service.
 
 </details>
 
 ### Behavior
 
 <details>
-<summary></summary>
-
+<summary>Notification management</summary>
 
 ```gherkin
+Feature: Notification management
 
+  Scenario: Create a notification from a threshold breach
+    Given a ThresholdBreachedEvent is received
+    When the notification message is generated from the event details
+    Then a new notification is created with a human-readable message
+    And the notification is broadcast to all connected SSE clients
+
+  Scenario: Suppress duplicate threshold breach notifications
+    Given a notification exists for a threshold that is still unread
+    When a new breach event arrives for the same threshold within the suppression window
+    Then the new notification is suppressed
+
+  Scenario: View all notifications
+    Given one or more notifications exist
+    And an authenticated user
+    When the user requests all notifications
+    Then all notifications are returned sorted newest first
+
+  Scenario: View a notification
+    Given an existing notification
+    And an authenticated user
+    When the user requests the notification
+    Then the notification details are returned
+
+  Scenario: Mark a notification as read
+    Given an existing unread notification
+    And an authenticated user
+    When the user marks the notification as read
+    Then the notification is marked as read
+
+  Scenario: Delete a notification
+    Given an existing notification
+    And an authenticated administrator
+    When the administrator deletes the notification
+    Then the notification no longer exists
+
+  Scenario: Clear all notifications
+    Given one or more notifications exist
+    And an authenticated administrator
+    When the administrator clears all notifications
+    Then no notifications remain in the system
 ```
+
 </details>
 
+<details>
+<summary>Real-time notification streaming</summary>
 
+```gherkin
+Feature: Real-time notification streaming
+
+  Scenario: Subscribe to notification stream
+    Given an authenticated user
+    When the user connects to the SSE notification stream
+    Then a CONNECTED event is received
+    And new notifications are pushed to the client in real time as they occur
+```
+</details>
 
 ## Clean Architecture
 
