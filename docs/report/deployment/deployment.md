@@ -5,16 +5,21 @@ description: Deployment guide using Docker Compose
 ---
 
 # Deployment
-The **EnergyConsumptionOptimizer** system deployment is orchestrated via **Docker Compose**.
-The stack provisions the following containerized services:
 
-* **API Gateway**: Reverse proxy acting as the unified entry point.
-* **Frontend**: The web user interface application.
-* **Backend Services**: The core business logic microservices.
-* **Persistence Layer**: MongoDB and InfluxDB v2.
+The **EnergyConsumptionOptimizer** system is orchestrated with **Docker Compose**. The stack
+provisions all containerized components:
+
+* **API Gateway** — Traefik reverse proxy, the single entry point.
+* **Frontend** — the web user interface.
+* **Backend Services** — the business-logic microservices.
+* **Infrastructure** — MongoDB, InfluxDB v2, Redis, and Kafka (with Kafka Connect).
+* **Observability** *(optional)* — Prometheus, Grafana, Loki, Tempo and the OpenTelemetry Collector.
+
+The pre-built service images are published to the GitHub Container Registry and pulled
+automatically on startup.
 
 ## Prerequisites
-- **Docker**
+- **Docker** (with Docker Compose)
 
 ## Configuration
 
@@ -23,7 +28,7 @@ These can be provided via a `.env` file in the project root or through the host 
 
 ### Required Variables
 
-The following variables are strictly required and have **no default values**:
+The following variables are strictly required and have **no default value**:
 
 | Variable | Description |
 |--------|-------------|
@@ -32,43 +37,36 @@ The following variables are strictly required and have **no default values**:
 | `DOCKER_INFLUXDB_INIT_USERNAME` | InfluxDB username |
 | `DOCKER_INFLUXDB_INIT_PASSWORD` | InfluxDB password |
 | `DOCKER_INFLUXDB_INIT_ADMIN_TOKEN` | InfluxDB admin token |
-
-## Custom MongoDB Image
-
-:::warning Important
-The project uses a custom MongoDB image designed **without external anonymous volumes**.  
-This base image (`mongonovolume`) must be generated locally via the provided script **before** starting the orchestration.
-:::
+| `REDIS_PASSWORD` | Password protecting the Redis cache |
 
 ## Step-by-step Guide
 
-### 1. Clone the bootstrap Repository
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/EnergyConsumptionOptimizer/EnergyConsumptionOptimizer
 ```
-### 2. Setup Environment
-Navigate to the project root and configure the [Required Variables](#required-variables). You can create an .env file.
 
-### 3. Generate Database Base Image
-Execute the script to build the [custom MongoDB](#custom-mongodb-image) image:
+### 2. Set up the Environment
+From the project root, create your `.env` from the example and fill in the
+[required variables](#required-variables):
 ```bash
-./CREATE_NOVOLUME_BASE_IMAGE.sh
+cp .env-example .env
 ```
 
-### 4. Start the System
-To start up the system, run the command:
+### 3. Start the System
 ```bash
-docker compose up
+docker compose up -d
 ```
 
-### 5. Access
-Once the system is running, the application is accessible via browser at URL: http://localhost:80
+### 4. Access
+Once running, the application is accessible at http://localhost.
 
 The system comes with a pre-configured administrator account:
-- Username: admin
-- Password: admin
+- Username: `admin`
+- Password: `admin`
 
-To stop the system and remove containers, run the command:
+### 5. Stop the System
 ```bash
 docker compose down
 ```
+Add the `-v` flag to also remove the data volumes.
