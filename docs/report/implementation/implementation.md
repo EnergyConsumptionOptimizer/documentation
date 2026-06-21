@@ -110,10 +110,19 @@ bottlenecks.
 
 ## Event-Driven architecture
 
-### Publish-Subscribe pattern
-The Event Publish/Subscribe pattern is used to decouple services by allowing them to communicate through events.
+The microservices communicate asynchronously through a **Publish/Subscribe** model built on
+**Apache Kafka**, which decouples producers from consumers. Kafka provides **at-least-once**
+delivery, so the system is designed to tolerate duplicate messages — hence the *Outbox*
+pattern when publishing and the *Inbox* pattern when consuming.
 
-### Publish events
+### Publishing — Transactional Outbox
+
+Persisting a domain change and publishing its event are two separate writes (database +
+broker). Doing them independently risks the **dual-write problem**, where one succeeds and the
+other fails. To avoid it, the event is written to an `outboxevents` collection **inside the
+same MongoDB transaction** as the domain change, so the two commit atomically. The publisher
+requires an active `UnitOfWork` and fails fast otherwise.
+
 ```typescript
 import type { DomainEvent } from "@domain/events/DomainEvent";
 
@@ -173,6 +182,28 @@ export class MongoOutboxEventPublisher implements EventPublisher {
 }
 ```
 
+A **Kafka Connect** instance, running the **MongoDB source connector**, tails the outbox
+collection and forwards committed events to Kafka. Outbox entries are then removed
+automatically by a 7-day TTL index.
+
+### Consuming — Idempotent Consumer (Inbox)
+
+Consumers subscribe to a topic through a consumer group. Since delivery is at-least-once, the
+same message may arrive twice. An **Inbox** repository deduplicates by atomically claiming each
+`eventId` (backed by a unique index), so already-processed events are skipped — turning
+at-least-once delivery into effectively **exactly-once processing**.
+
+```typescript
+const acquired = await this.#inbox.tryAcquire(message.eventId);
+if (!acquired) return; // duplicate, already processed
+```
+
+### Error Handling — Retry & Dead Letter Queue
+
+Transient failures are retried with **exponential backoff**. If retries are exhausted, or the
+message is permanently invalid (malformed payload or unexpected event type), it is routed to a
+**Dead Letter Queue** — a dedicated Kafka topic — instead of blocking the partition.
+
 ## Event-Driven Cache
 ### How the data are ingested and why we need cache
 A Smart Furniture Hookup device sends telemetry data (hookup ID, username, and payload) to an API Gateway, which forwards it to a Monitoring service.
@@ -213,6 +244,50 @@ We manage a dual-token lifecycle:
 1. **Access Token:** Short-lived (approx. 1 hour) for immediate resource authorization.
 2. **Refresh Token:** Long-lived (approx. 7 days) used to acquire new access tokens without requiring user
    re-credentials.
+
+### Gateway-Level Enforcement
+
+All client traffic enters the system through a single **Traefik** API Gateway, which routes
+requests to the appropriate microservice by path prefix. Authentication is enforced centrally
+at the gateway rather than being re-implemented in every service.
+
+Protected routes are guarded by a shared **ForwardAuth** middleware: before forwarding a
+request, the gateway issues a sub-request to the User Service's verification endpoint
+(`/api/internal/auth/verify`), which validates the JWT carried in the HttpOnly cookie.
+
+- If the token is valid, the User Service returns the caller's identity, which the gateway
+  injects into the upstream request as trusted headers (`X-User-Id`, `X-User-Role`,
+  `X-User-Username`). Downstream services consume these headers and never handle the raw token.
+- If the token is missing or invalid, the gateway rejects the request immediately and the
+  target service is never reached.
+
+The gateway is configured to ignore client-supplied forwarding headers
+(`trustForwardHeader=false`), so identity cannot be spoofed: the **User Service is the single
+source of truth** for authentication. A small set of routes — login/refresh/logout, admin
+password reset, and device measurement ingestion — are intentionally public and bypass this
+middleware.
+
+![auth_flow.png](../img/sequence_uml/SequenceDiagramAuth.png)
+
+## Observability
+
+The services are instrumented with **OpenTelemetry**, covering the three pillars — metrics,
+logs, and traces. Each service exports telemetry over OTLP to a central **OpenTelemetry
+Collector**, which routes every signal to a dedicated backend, all visualized in a single
+**Grafana** instance:
+
+- **Metrics → Prometheus:** runtime and custom *business metrics* (e.g. messages routed to the
+  DLQ).
+- **Logs → Loki:** structured **pino** logs, shipped through `pino-opentelemetry-transport`
+  and correlated with the active trace.
+- **Traces → Tempo:** automatic instrumentation plus manual spans on critical paths; a
+  `traceparent` derived from the trace context lets a single operation be followed across
+  services.
+
+The Collector also filters out noisy spans (health checks, static assets, middleware) before
+forwarding them.
+
+![observability.png](../img/uml/observabilitystack.png)
 
 ## Wave Lab
 
